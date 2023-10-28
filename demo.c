@@ -27,6 +27,7 @@
 #include <microui.h>
 #include <murl.h>
 
+int checked = 0;
 char buf[256] = {0};
 
 int main(void) {
@@ -46,6 +47,8 @@ int main(void) {
 
         if (mu_begin_window(ctx, "Hello", mu_rect(20, 20, 200, 150))) {
             mu_text(ctx, "text");
+
+            mu_checkbox(ctx, "checkbox", &checked);
 
             mu_label(ctx, "Hello, raylib");
 

@@ -97,6 +97,7 @@ func mu_begin_window(ctx: *mu_Context, title: *char, rect: mu_Rect) sint { retur
 extern func mu_text(ctx: *mu_Context, text: *byte) void;
 extern func mu_label(ctx: *mu_Context, text: *char) void;
 extern func mu_button_ex(ctx: *mu_Context, label: *char, icon: sint, opt: sint) sint;
+extern func mu_checkbox(ctx: *mu_Context, label: *char, state: *sint) sint;
 extern func mu_textbox_raw(ctx: *mu_Context, buf: *char, bufsz: sint, id: mu_Id, r: mu_Rect, opt: sint) sint;
 extern func mu_textbox_ex(ctx: *mu_Context, buf: *char, bufsz: sint, opt: sint) sint;
 extern func mu_begin_window_ex(ctx: *mu_Context, title: *char, rect: mu_Rect, opt: sint) sint;
