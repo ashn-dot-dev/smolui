@@ -1,0 +1,102 @@
+import "c";
+
+alias MU_CLIP = enum {
+    MU_CLIP_PART = 1;
+    MU_CLIP_ALL;
+};
+
+alias MU_COMMAND = enum {
+    MU_COMMAND_JUMP = 1;
+    MU_COMMAND_CLIP;
+    MU_COMMAND_RECT;
+    MU_COMMAND_TEXT;
+    MU_COMMAND_ICON;
+    MU_COMMAND_MAX;
+};
+
+alias MU_COLOR = enum {
+    MU_COLOR_TEXT;
+    MU_COLOR_BORDER;
+    MU_COLOR_WINDOWBG;
+    MU_COLOR_TITLEBG;
+    MU_COLOR_TITLETEXT;
+    MU_COLOR_PANELBG;
+    MU_COLOR_BUTTON;
+    MU_COLOR_BUTTONHOVER;
+    MU_COLOR_BUTTONFOCUS;
+    MU_COLOR_BASE;
+    MU_COLOR_BASEHOVER;
+    MU_COLOR_BASEFOCUS;
+    MU_COLOR_SCROLLBASE;
+    MU_COLOR_SCROLLTHUMB;
+    MU_COLOR_MAX;
+};
+
+alias MU_ICON = enum {
+    MU_ICON_CLOSE = 1;
+    MU_ICON_CHECK;
+    MU_ICON_COLLAPSED;
+    MU_ICON_EXPANDED;
+    MU_ICON_MAX;
+};
+
+alias MU_RES = enum {
+    MU_RES_ACTIVE       = (1u << 0);
+    MU_RES_SUBMIT       = (1u << 1);
+    MU_RES_CHANGE       = (1u << 2);
+};
+
+alias MU_OPT = enum {
+    MU_OPT_ALIGNCENTER  = (1u << 0);
+    MU_OPT_ALIGNRIGHT   = (1u << 1);
+    MU_OPT_NOINTERACT   = (1u << 2);
+    MU_OPT_NOFRAME      = (1u << 3);
+    MU_OPT_NORESIZE     = (1u << 4);
+    MU_OPT_NOSCROLL     = (1u << 5);
+    MU_OPT_NOCLOSE      = (1u << 6);
+    MU_OPT_NOTITLE      = (1u << 7);
+    MU_OPT_HOLDFOCUS    = (1u << 8);
+    MU_OPT_AUTOSIZE     = (1u << 9);
+    MU_OPT_POPUP        = (1u << 10);
+    MU_OPT_CLOSED       = (1u << 11);
+    MU_OPT_EXPANDED     = (1u << 12);
+};
+
+alias MU_MOUSE = enum {
+    MU_MOUSE_LEFT       = (1u << 0);
+    MU_MOUSE_RIGHT      = (1u << 1);
+    MU_MOUSE_MIDDLE     = (1u << 2);
+};
+
+alias MU_KEY = enum {
+    MU_KEY_SHIFT        = (1u << 0);
+    MU_KEY_CTRL         = (1u << 1);
+    MU_KEY_ALT          = (1u << 2);
+    MU_KEY_BACKSPACE    = (1u << 3);
+    MU_KEY_RETURN       = (1u << 4);
+};
+
+alias mu_Context = any; # opaque
+alias mu_Id = uint;
+alias mu_Real = float;
+alias mu_Font = *any;
+
+struct mu_Vec2 { var x: sint; var y: sint; }
+struct mu_Rect { var x: sint; var y: sint; var w: sint; var h: sint; }
+struct mu_Color { var r: u8; var g: u8; var b: u8; var a: u8; }
+struct mu_PoolItem { var id: mu_Id; var last_update: sint; }
+
+extern func mu_init(ctx: *mu_Context) void;
+extern func mu_begin(ctx: *mu_Context) void;
+extern func mu_end(ctx: *mu_Context) void;
+
+func mu_begin_window(ctx: *mu_Context, title: *char, rect: mu_Rect) sint { return mu_begin_window_ex(ctx, title, rect, 0); }
+func mu_button(ctx: *mu_Context, label: *char) sint { return mu_button_ex(ctx, label, 0, (:sint)MU_OPT_ALIGNCENTER); }
+
+extern func mu_label(ctx: *mu_Context, text: *char) void;
+extern func mu_button_ex(ctx: *mu_Context, label: *char, icon: sint, opt: sint) sint;
+extern func mu_begin_window_ex(ctx: *mu_Context, title: *char, rect: mu_Rect, opt: sint) sint;
+extern func mu_end_window(ctx: *mu_Context) void;
+extern func mu_open_popup(ctx: *mu_Context, name: *char) void;
+extern func mu_begin_popup(ctx: *mu_Context, name: *char) sint;
+extern func mu_end_popup(ctx: *mu_Context) void;

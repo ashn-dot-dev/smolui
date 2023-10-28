@@ -1,0 +1,45 @@
+import "std";
+
+import "raylib";
+
+import "microui.sunder";
+import "murl.sunder";
+import "smolui.sunder";
+
+func main() void {
+    InitWindow(800, 600, startof("demo"));
+    defer CloseWindow();
+    SetTargetFPS(60);
+
+    var ctx = smolui::mu_context_new();
+    defer smolui::mu_context_del(ctx);
+    mu_init(ctx);
+    murl_setup_font_ex(ctx, std::ptr[[Font]]::NULL);
+
+    for not WindowShouldClose() {
+        BeginDrawing();
+        ClearBackground(BLACK);
+
+        murl_handle_input(ctx);
+        mu_begin(ctx);
+
+        if mu_begin_window(ctx, startof("Hello"), (:mu_Rect){.x = 20, .y = 20, .w = 200, .h = 150}) != 0 {
+            mu_label(ctx, startof("Hello, raylib"));
+
+            if (mu_button(ctx, startof("The button")) != 0) {
+                mu_open_popup(ctx, startof("popup"));
+            }
+
+            if (mu_begin_popup(ctx, startof("popup")) != 0) {
+                mu_label(ctx, startof("This is a popup"));
+                mu_end_popup(ctx);
+            }
+
+            mu_end_window(ctx);
+        }
+
+        mu_end(ctx);
+        murl_render(ctx);
+        EndDrawing();
+    }
+}

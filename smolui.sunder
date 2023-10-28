@@ -1,0 +1,7 @@
+namespace smolui;
+
+import "microui.sunder";
+import "murl.sunder";
+
+extern func mu_context_new() *mu_Context;
+extern func mu_context_del(ctx: *mu_Context) void;

@@ -8,7 +8,7 @@
 
 all: libsmolui.a
 
-demo: libsmolui.a
+demo.c.out: libsmolui.a
 	$(CC) $(CFLAGS) -o $@ demo.c \
 		-I. -L. \
 		-I${SUNDER_HOME}/lib/raylib \
@@ -16,14 +16,24 @@ demo: libsmolui.a
 		$$(${SUNDER_HOME}/lib/raylib/raylib-config desktop --libs) \
 		-lsmolui
 
+demo.sunder.out: demo.sunder smolui.sunder microui.sunder libsmolui.a
+	SUNDER_CFLAGS="$(CFLAGS) $$(${SUNDER_HOME}/lib/raylib/raylib-config desktop --cflags)" \
+	sunder-compile -o $@ \
+		$$(${SUNDER_HOME}/lib/raylib/raylib-config desktop --libs) \
+		-L. -lsmolui \
+		demo.sunder
+
 libsmolui.a:
-	$(CC) $(CFLAGS) -c -I. -I${SUNDER_HOME}/lib/raylib -o smolui.o microui.c
+	$(CC) $(CFLAGS) -c -I. -o microui.o microui.c
 	$(CC) $(CFLAGS) -c -I. -I${SUNDER_HOME}/lib/raylib -o murl.o murl.c
-	ar -rcs $@ smolui.o murl.o
+	$(CC) $(CFLAGS) -c -I. -o smolui.o smolui.c
+	ar -rcs $@ microui.o murl.o smolui.o
 
 install: libsmolui.a
 	mkdir -p "$(SUNDER_HOME)/lib/smolui"
-	# cp smolui.sunder "$(SUNDER_HOME)/lib/smolui"
+	cp microui.sunder "$(SUNDER_HOME)/lib/smolui"
+	cp murl.sunder "$(SUNDER_HOME)/lib/smolui"
+	cp smolui.sunder "$(SUNDER_HOME)/lib/smolui"
 	cp libsmolui.a "$(SUNDER_HOME)/lib/smolui"
 
 uninstall:
@@ -31,6 +41,6 @@ uninstall:
 
 clean:
 	rm -f \
-		demo \
+		*.out \
 		*.a \
 		*.o
