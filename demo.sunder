@@ -7,8 +7,9 @@ import "microui.sunder";
 import "murl.sunder";
 import "smolui.sunder";
 
-var slider: float = 0.0;
 var checked: sint = 0;
+var slider: float = 0.0;
+var number: float = 0.0;
 var buf = (:[256]byte)[0...];
 
 func main() void {
@@ -34,6 +35,8 @@ func main() void {
             mu_checkbox(ctx, startof("checkbox"), &checked);
 
             mu_slider(ctx, &slider, 0.0, 100.0);
+
+            mu_number(ctx, &number, 2.0);
 
             mu_label(ctx, startof("Hello, raylib"));
 

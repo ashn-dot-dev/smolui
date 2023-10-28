@@ -27,8 +27,9 @@
 #include <microui.h>
 #include <murl.h>
 
-float slider = 0.0;
 int checked = 0;
+float slider = 0.0;
+float number = 0.0;
 char buf[256] = {0};
 
 int main(void) {
@@ -52,6 +53,8 @@ int main(void) {
             mu_checkbox(ctx, "checkbox", &checked);
 
             mu_slider(ctx, &slider, 0.0, 100.0);
+
+            mu_number(ctx, &number, 2.0);
 
             mu_label(ctx, "Hello, raylib");
 
