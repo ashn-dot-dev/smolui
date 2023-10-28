@@ -27,8 +27,10 @@
 #include <microui.h>
 #include <murl.h>
 
+char buf[256] = {0};
+
 int main(void) {
-    InitWindow(800, 600, "microui + raylib");
+    InitWindow(800, 600, "demo");
     SetTargetFPS(60);
 
     mu_Context *ctx = malloc(sizeof(mu_Context));
@@ -53,6 +55,8 @@ int main(void) {
                 mu_label(ctx, "This is a popup");
                 mu_end_popup(ctx);
             }
+
+            mu_textbox(ctx, buf, sizeof(buf));
 
             mu_end_window(ctx);
         }

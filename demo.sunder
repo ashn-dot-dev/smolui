@@ -1,3 +1,4 @@
+import "c";
 import "std";
 
 import "raylib";
@@ -5,6 +6,8 @@ import "raylib";
 import "microui.sunder";
 import "murl.sunder";
 import "smolui.sunder";
+
+var buf = (:[256]byte)[0...];
 
 func main() void {
     InitWindow(800, 600, startof("demo"));
@@ -34,6 +37,8 @@ func main() void {
                 mu_label(ctx, startof("This is a popup"));
                 mu_end_popup(ctx);
             }
+
+            mu_textbox(ctx, &buf[0], (:sint)countof(buf));
 
             mu_end_window(ctx);
         }
