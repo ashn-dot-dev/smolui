@@ -45,6 +45,8 @@ int main(void) {
         mu_begin(ctx);
 
         if (mu_begin_window(ctx, "Hello", mu_rect(20, 20, 200, 150))) {
+            mu_text(ctx, "text");
+
             mu_label(ctx, "Hello, raylib");
 
             if (mu_button(ctx, "The button")) {

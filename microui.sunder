@@ -94,6 +94,7 @@ func mu_button(ctx: *mu_Context, label: *char) sint { return mu_button_ex(ctx, l
 func mu_textbox(ctx: *mu_Context, buf: *char, bufsz: sint) sint { return mu_textbox_ex(ctx, buf, bufsz, 0); }
 func mu_begin_window(ctx: *mu_Context, title: *char, rect: mu_Rect) sint { return mu_begin_window_ex(ctx, title, rect, 0); }
 
+extern func mu_text(ctx: *mu_Context, text: *byte) void;
 extern func mu_label(ctx: *mu_Context, text: *char) void;
 extern func mu_button_ex(ctx: *mu_Context, label: *char, icon: sint, opt: sint) sint;
 extern func mu_textbox_raw(ctx: *mu_Context, buf: *char, bufsz: sint, id: mu_Id, r: mu_Rect, opt: sint) sint;
