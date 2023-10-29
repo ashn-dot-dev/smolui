@@ -6,68 +6,89 @@ import "raylib";
 import "microui.sunder";
 import "smolui.sunder";
 
-var checked: sint = 0;
-var slider: float = 0.0;
-var number: float = 0.0;
-var buf = (:[256]byte)[0...];
-
 func main() void {
     InitWindow(800, 600, startof("demo"));
     defer CloseWindow();
     SetTargetFPS(60);
 
-    var ctx = smolui::mu_context_new();
-    defer smolui::mu_context_del(ctx);
-    mu_init(ctx);
-    smolui::setup_font_ex(ctx, std::ptr[[Font]]::NULL);
+    var ui = smolui::context::init(std::ptr[[Font]]::NULL);
+
+    var textbuf_a = std::string::init_from_str("textbox a");
+    var textbuf_b = std::string::init_from_str("textbox b");
+    defer textbuf_a.fini();
+    defer textbuf_b.fini();
+    var checked: bool = false;
+    var slider: float = 0.0;
+    var number: float = 0.0;
 
     for not WindowShouldClose() {
         BeginDrawing();
         ClearBackground(BLACK);
 
-        smolui::handle_input(ctx);
-        mu_begin(ctx);
+        ui.handle_input();
 
-        if mu_begin_window(ctx, startof("Hello"), (:mu_Rect){.x = 20, .y = 20, .w = 400, .h = 300}) != 0 {
-            mu_text(ctx, startof("text"));
-
-            mu_checkbox(ctx, startof("checkbox"), &checked);
-
-            mu_slider(ctx, &slider, 0.0, 100.0);
-
-            mu_number(ctx, &number, 2.0);
-
-            mu_label(ctx, startof("Hello, raylib"));
-
-            if mu_header(ctx, startof("Header")) != 0 {
-                mu_text(ctx, startof("text under header"));
+        ui.begin();
+        if ui.begin_window_ex("window", (:smolui::rect){.x = 20, .y = 20, .w = 800 - 2 * 20, .h = 600 - 2 * 20}, smolui::OPT_NOCLOSE) {
+            ui.text("some text");
+            ui.label("label");
+            if ui.button("button"){
+                std::print_line(std::out(), "button pressed");
             }
-
-            if mu_begin_treenode(ctx, startof("Treenode")) != 0 {
-                mu_text(ctx, startof("text under treenode"));
-                mu_end_treenode(ctx);
+            if ui.button_ex("button ex", smolui::ICON_MAX, smolui::OPT_ALIGNCENTER){
+                std::print_line(std::out(), "button (ex) pressed");
             }
-
-            if mu_button(ctx, startof("The button")) != 0 {
-                mu_open_popup(ctx, startof("popup"));
+            if ui.checkbox("checkbox", &checked) {
+                std::print_line(std::out(), "checkbox interaction");
             }
-
-            if mu_begin_popup(ctx, startof("popup")) != 0 {
-                mu_label(ctx, startof("This is a popup"));
-                mu_end_popup(ctx);
+            if ui.textbox(&textbuf_a) {
+                std::print_line(std::out(), "textbox interaction");
             }
+            var textbox_ex_res = ui.textbox_ex(&textbuf_b, smolui::OPT_ALIGNCENTER);
+            if textbox_ex_res != 0 {
+                std::print_line(std::out(), "textbox (ex) interaction");
+                if (textbox_ex_res & smolui::RES_SUBMIT) != 0 {
+                    std::print_line(std::out(), "\ttextbox submit");
+                }
+                if (textbox_ex_res & smolui::RES_CHANGE) != 0 {
+                    std::print_line(std::out(), "\ttextbox change");
+                }
+            }
+            if ui.slider(&slider, 0.0, 100.0) {
+                std::print_line(std::out(), "slider interaction");
+            }
+            if ui.number(&number, 5.0) {
+                std::print_line(std::out(), "number interaction");
+            }
+            if ui.header("header") {
+                ui.text("text under header");
+            }
+            if ui.header_ex("header ex", smolui::OPT_EXPANDED) {
+                ui.text("text under header (ex)");
+            }
+            if ui.begin_treenode("treenode") {
+                ui.text("text under treenode");
+                ui.end_treenode();
+            }
+            if ui.begin_treenode_ex("treenode ex", smolui::OPT_EXPANDED) {
+                ui.text("text under treenode (ex)");
+                ui.end_treenode();
+            }
+            if ui.button("open popup") {
+                ui.open_popup("popup");
+            }
+            if ui.begin_popup("popup") {
+                ui.text("text inside popup");
+                ui.end_popup();
+            }
+            ui.begin_panel("panel");
+            ui.text("text inside panel");
+            ui.end_panel();
 
-            mu_begin_panel(ctx, startof("panel"));
-            mu_text(ctx, startof("text under panel"));
-            mu_end_panel(ctx);
-
-            mu_textbox(ctx, &buf[0], (:sint)countof(buf));
-
-            mu_end_window(ctx);
+            ui.end_window();
         }
+        ui.end();
 
-        mu_end(ctx);
-        smolui::render(ctx);
+        ui.render();
         EndDrawing();
     }
 }

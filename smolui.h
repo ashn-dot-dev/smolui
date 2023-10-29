@@ -31,8 +31,8 @@ void smolui_mu_context_del(mu_Context* ctx);
 #define SMOLUI_VECTOR2_FROM_MU(v) ((Vector2){v.x, v.y})
 
 // Set the text height/width callbacks and the font.
-void smolui_setup_font_ex(mu_Context* ctx, Font const* font);
-#define smolui_setup_font(ctx) smolui_setup_font_ex(ctx, NULL)
+// Providing a NULL font pointer wll use the default raylib font.
+void smolui_setup_font(mu_Context* ctx, Font const* font);
 
 // `mu_Context.text_width` callback. See `smolui_setup_font`.
 int smolui_text_width(mu_Font font, char const* str, int len);

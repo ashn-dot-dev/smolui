@@ -44,7 +44,7 @@ smolui_mu_context_del(mu_Context* ctx)
 }
 
 void
-smolui_setup_font_ex(mu_Context* ctx, Font const* font)
+smolui_setup_font(mu_Context* ctx, Font const* font)
 {
     ctx->style->font = (mu_Font)font;
     ctx->text_width = smolui_text_width;
