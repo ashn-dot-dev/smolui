@@ -99,6 +99,7 @@ func mu_number(ctx: *mu_Context, value: *mu_Real, step: mu_Real) sint { return m
 func mu_header(ctx: *mu_Context, label: *char) sint { return mu_header_ex(ctx, label, 0); }
 func mu_begin_treenode(ctx: *mu_Context, label: *char) sint { return mu_begin_treenode_ex(ctx, label, 0); }
 func mu_begin_window(ctx: *mu_Context, title: *char, rect: mu_Rect) sint { return mu_begin_window_ex(ctx, title, rect, 0); }
+func mu_begin_panel(ctx: *mu_Context, name: *char) void { mu_begin_panel_ex(ctx, name, 0); }
 
 extern func mu_text(ctx: *mu_Context, text: *byte) void;
 extern func mu_label(ctx: *mu_Context, text: *char) void;
@@ -116,3 +117,5 @@ extern func mu_end_window(ctx: *mu_Context) void;
 extern func mu_open_popup(ctx: *mu_Context, name: *char) void;
 extern func mu_begin_popup(ctx: *mu_Context, name: *char) sint;
 extern func mu_end_popup(ctx: *mu_Context) void;
+extern func mu_begin_panel_ex(ctx: *mu_Context, name: *char, opt: sint) void;
+extern func mu_end_panel(ctx: *mu_Context) void;

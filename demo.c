@@ -76,6 +76,10 @@ int main(void) {
                 mu_end_popup(ctx);
             }
 
+            mu_begin_panel(ctx, "panel");
+            mu_text(ctx, "text under panel");
+            mu_end_panel(ctx);
+
             mu_textbox(ctx, buf, sizeof(buf));
 
             mu_end_window(ctx);

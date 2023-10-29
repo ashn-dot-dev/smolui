@@ -58,6 +58,10 @@ func main() void {
                 mu_end_popup(ctx);
             }
 
+            mu_begin_panel(ctx, startof("panel"));
+            mu_text(ctx, startof("text under panel"));
+            mu_end_panel(ctx);
+
             mu_textbox(ctx, &buf[0], (:sint)countof(buf));
 
             mu_end_window(ctx);
