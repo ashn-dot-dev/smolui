@@ -40,20 +40,20 @@ func main() void {
 
             mu_label(ctx, startof("Hello, raylib"));
 
-            if (mu_header(ctx, startof("Header")) != 0) {
+            if mu_header(ctx, startof("Header")) != 0 {
                 mu_text(ctx, startof("text under header"));
             }
 
-            if (mu_begin_treenode(ctx, startof("Treenode")) != 0) {
+            if mu_begin_treenode(ctx, startof("Treenode")) != 0 {
                 mu_text(ctx, startof("text under treenode"));
                 mu_end_treenode(ctx);
             }
 
-            if (mu_button(ctx, startof("The button")) != 0) {
+            if mu_button(ctx, startof("The button")) != 0 {
                 mu_open_popup(ctx, startof("popup"));
             }
 
-            if (mu_begin_popup(ctx, startof("popup")) != 0) {
+            if mu_begin_popup(ctx, startof("popup")) != 0 {
                 mu_label(ctx, startof("This is a popup"));
                 mu_end_popup(ctx);
             }
