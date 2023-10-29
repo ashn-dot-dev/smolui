@@ -30,13 +30,15 @@ func main() void {
         mu_begin(ctx);
 
         if mu_begin_window(ctx, startof("Hello"), (:mu_Rect){.x = 20, .y = 20, .w = 200, .h = 150}) != 0 {
-            mu_text(ctx, startof("text"));
+            if (mu_header(ctx, startof("Header")) != 0) {
+                mu_text(ctx, startof("text"));
 
-            mu_checkbox(ctx, startof("checkbox"), &checked);
+                mu_checkbox(ctx, startof("checkbox"), &checked);
 
-            mu_slider(ctx, &slider, 0.0, 100.0);
+                mu_slider(ctx, &slider, 0.0, 100.0);
 
-            mu_number(ctx, &number, 2.0);
+                mu_number(ctx, &number, 2.0);
+            }
 
             mu_label(ctx, startof("Hello, raylib"));
 
