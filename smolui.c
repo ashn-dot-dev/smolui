@@ -55,9 +55,14 @@ smolui_setup_font_ex(mu_Context* ctx, Font const* font)
 int
 smolui_text_width(mu_Font font, char const* str, int len)
 {
-    (void)len;
+    // TODO: There is no MeasureText function that takes a character slice, so
+    // we are forced to allocate. See we can use a fixed buffer with a fallback
+    // to strndup if len exceeds the size of the buffer.
+    char* dup = strndup(str, (size_t)len);
+    assert(dup != NULL);
     Font rlfont = SMOLUI_FONT_FROM_MU(font);
-    Vector2 size = MeasureTextEx(rlfont, str, rlfont.baseSize, SMOLUI_TEXT_SPACING);
+    Vector2 size = MeasureTextEx(rlfont, dup, rlfont.baseSize, SMOLUI_TEXT_SPACING);
+    free(dup);
     return size.x;
 }
 
