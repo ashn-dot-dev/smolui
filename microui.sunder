@@ -97,6 +97,7 @@ func mu_textbox(ctx: *mu_Context, buf: *char, bufsz: sint) sint { return mu_text
 func mu_slider(ctx: *mu_Context, value: *mu_Real, lo: mu_Real, hi: mu_Real) sint { return mu_slider_ex(ctx, value, lo, hi, 0.0, MU_SLIDER_FMT, (:sint)MU_OPT_ALIGNCENTER); }
 func mu_number(ctx: *mu_Context, value: *mu_Real, step: mu_Real) sint { return mu_number_ex(ctx, value, step, MU_SLIDER_FMT, (:sint)MU_OPT_ALIGNCENTER); }
 func mu_header(ctx: *mu_Context, label: *char) sint { return mu_header_ex(ctx, label, 0); }
+func mu_begin_treenode(ctx: *mu_Context, label: *char) sint { return mu_begin_treenode_ex(ctx, label, 0); }
 func mu_begin_window(ctx: *mu_Context, title: *char, rect: mu_Rect) sint { return mu_begin_window_ex(ctx, title, rect, 0); }
 
 extern func mu_text(ctx: *mu_Context, text: *byte) void;
@@ -107,6 +108,8 @@ extern func mu_textbox_raw(ctx: *mu_Context, buf: *char, bufsz: sint, id: mu_Id,
 extern func mu_textbox_ex(ctx: *mu_Context, buf: *char, bufsz: sint, opt: sint) sint;
 extern func mu_slider_ex(ctx: *mu_Context, value: *mu_Real, low: mu_Real, high: mu_Real, step: mu_Real, fmt: *char, opt: sint) sint;
 extern func mu_number_ex(ctx: *mu_Context, value: *mu_Real, step: mu_Real, fmt: *char, opt: sint) sint;
+extern func mu_begin_treenode_ex(ctx: *mu_Context, label: *char, opt: sint) sint;
+extern func mu_end_treenode(ctx: *mu_Context) void;
 extern func mu_header_ex(ctx: *mu_Context, label: *char, opt: sint) sint;
 extern func mu_begin_window_ex(ctx: *mu_Context, title: *char, rect: mu_Rect, opt: sint) sint;
 extern func mu_end_window(ctx: *mu_Context) void;

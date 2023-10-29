@@ -47,18 +47,25 @@ int main(void) {
         murl_handle_input(ctx);
         mu_begin(ctx);
 
-        if (mu_begin_window(ctx, "Hello", mu_rect(20, 20, 200, 150))) {
-            if (mu_header(ctx, "Header")) {
-                mu_text(ctx, "text");
+        if (mu_begin_window(ctx, "Hello", mu_rect(20, 20, 400, 300))) {
+            mu_text(ctx, "text");
 
-                mu_checkbox(ctx, "checkbox", &checked);
+            mu_checkbox(ctx, "checkbox", &checked);
 
-                mu_slider(ctx, &slider, 0.0, 100.0);
+            mu_slider(ctx, &slider, 0.0, 100.0);
 
-                mu_number(ctx, &number, 2.0);
-            }
+            mu_number(ctx, &number, 2.0);
 
             mu_label(ctx, "Hello, raylib");
+
+            if (mu_header(ctx, "Header")) {
+                mu_text(ctx, "text under header");
+            }
+
+            if (mu_begin_treenode(ctx, "Treenode")) {
+                mu_text(ctx, "text under treenode");
+                mu_end_treenode(ctx);
+            }
 
             if (mu_button(ctx, "The button")) {
                 mu_open_popup(ctx, "popup");
