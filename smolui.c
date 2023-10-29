@@ -113,15 +113,15 @@ smolui_handle_keyboard_input(mu_Context* ctx)
         KeyboardKey rl;
         int mu;
     } keyboard_keys[] = {
-        {KEY_LEFT_SHIFT, MU_KEY_SHIFT},
-        {KEY_RIGHT_SHIFT, MU_KEY_SHIFT},
-        {KEY_LEFT_CONTROL, MU_KEY_CTRL},
+        {KEY_LEFT_SHIFT,    MU_KEY_SHIFT},
+        {KEY_RIGHT_SHIFT,   MU_KEY_SHIFT},
+        {KEY_LEFT_CONTROL,  MU_KEY_CTRL},
         {KEY_RIGHT_CONTROL, MU_KEY_CTRL},
-        {KEY_LEFT_ALT, MU_KEY_ALT},
-        {KEY_RIGHT_ALT, MU_KEY_ALT},
-        {KEY_ENTER, MU_KEY_RETURN},
-        {KEY_KP_ENTER, MU_KEY_RETURN},
-        {KEY_BACKSPACE, MU_KEY_BACKSPACE},
+        {KEY_LEFT_ALT,      MU_KEY_ALT},
+        {KEY_RIGHT_ALT,     MU_KEY_ALT},
+        {KEY_ENTER,         MU_KEY_RETURN},
+        {KEY_KP_ENTER,      MU_KEY_RETURN},
+        {KEY_BACKSPACE,     MU_KEY_BACKSPACE},
         {-1, -1},
     };
     for (size_t index = 0;; index++) {
