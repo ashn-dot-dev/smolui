@@ -208,6 +208,9 @@ smolui_render(mu_Context* ctx)
             case MU_ICON_EXPANDED: {
                 icon = "-";
             } break;
+            case MU_ICON_MAX: {
+                icon = "^";
+            } break;
             default:
                 assert(0 && "unreachable");
             }
