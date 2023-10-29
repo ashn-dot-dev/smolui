@@ -1,7 +1,12 @@
 namespace smolui;
 
+import "raylib";
+
 import "microui.sunder";
-import "murl.sunder";
 
 extern func mu_context_new() *mu_Context;
 extern func mu_context_del(ctx: *mu_Context) void;
+
+extern func setup_font_ex(ctx: *mu_Context, font: *Font) void;
+extern func handle_input(ctx: *mu_Context) void;
+extern func render(ctx: *mu_Context) void;

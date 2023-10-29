@@ -25,14 +25,12 @@ demo.sunder.out: demo.sunder smolui.sunder microui.sunder libsmolui.a
 
 libsmolui.a:
 	$(CC) $(CFLAGS) -c -I. -o microui.o microui.c
-	$(CC) $(CFLAGS) -c -I. -I${SUNDER_HOME}/lib/raylib -o murl.o murl.c
-	$(CC) $(CFLAGS) -c -I. -o smolui.o smolui.c
-	ar -rcs $@ microui.o murl.o smolui.o
+	$(CC) $(CFLAGS) -c -I. -I${SUNDER_HOME}/lib/raylib -o smolui.o smolui.c
+	ar -rcs $@ microui.o smolui.o
 
 install: libsmolui.a
 	mkdir -p "$(SUNDER_HOME)/lib/smolui"
 	cp microui.sunder "$(SUNDER_HOME)/lib/smolui"
-	cp murl.sunder "$(SUNDER_HOME)/lib/smolui"
 	cp smolui.sunder "$(SUNDER_HOME)/lib/smolui"
 	cp libsmolui.a "$(SUNDER_HOME)/lib/smolui"
 

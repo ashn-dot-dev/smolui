@@ -24,8 +24,7 @@
 #include <stdbool.h>
 #include <stdlib.h>
 
-#include <microui.h>
-#include <murl.h>
+#include <smolui.h>
 
 int checked = 0;
 float slider = 0.0;
@@ -38,13 +37,13 @@ int main(void) {
 
     mu_Context *ctx = malloc(sizeof(mu_Context));
     mu_init(ctx);
-    murl_setup_font_ex(ctx, NULL);
+    smolui_setup_font_ex(ctx, NULL);
 
     while (!WindowShouldClose()) {
         BeginDrawing();
         ClearBackground(BLACK);
 
-        murl_handle_input(ctx);
+        smolui_handle_input(ctx);
         mu_begin(ctx);
 
         if (mu_begin_window(ctx, "Hello", mu_rect(20, 20, 400, 300))) {
@@ -86,7 +85,7 @@ int main(void) {
         }
 
         mu_end(ctx);
-        murl_render(ctx);
+        smolui_render(ctx);
         EndDrawing();
     }
 

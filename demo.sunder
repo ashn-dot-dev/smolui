@@ -4,7 +4,6 @@ import "std";
 import "raylib";
 
 import "microui.sunder";
-import "murl.sunder";
 import "smolui.sunder";
 
 var checked: sint = 0;
@@ -20,13 +19,13 @@ func main() void {
     var ctx = smolui::mu_context_new();
     defer smolui::mu_context_del(ctx);
     mu_init(ctx);
-    murl_setup_font_ex(ctx, std::ptr[[Font]]::NULL);
+    smolui::setup_font_ex(ctx, std::ptr[[Font]]::NULL);
 
     for not WindowShouldClose() {
         BeginDrawing();
         ClearBackground(BLACK);
 
-        murl_handle_input(ctx);
+        smolui::handle_input(ctx);
         mu_begin(ctx);
 
         if mu_begin_window(ctx, startof("Hello"), (:mu_Rect){.x = 20, .y = 20, .w = 400, .h = 300}) != 0 {
@@ -68,7 +67,7 @@ func main() void {
         }
 
         mu_end(ctx);
-        murl_render(ctx);
+        smolui::render(ctx);
         EndDrawing();
     }
 }
