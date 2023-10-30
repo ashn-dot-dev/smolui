@@ -203,8 +203,50 @@ extern func mu_color(r: sint, g: sint, b: sint, a: sint) mu_Color;
 extern func mu_init(ctx: *mu_Context) void;
 extern func mu_begin(ctx: *mu_Context) void;
 extern func mu_end(ctx: *mu_Context) void;
+extern func mu_set_focus(ctx: *mu_Context, id: mu_Id) void;
+extern func mu_get_id(ctx: *mu_Context, data: *any, size: sint) mu_Id;
+extern func mu_push_id(ctx: *mu_Context, data: *any, size: sint) void;
+extern func mu_pop_id(ctx: *mu_Context) void;
+extern func mu_push_clip_rect(ctx: *mu_Context, rect: mu_Rect) void;
+extern func mu_pop_clip_rect(ctx: *mu_Context) void;
+extern func mu_get_clip_rect(ctx: *mu_Context) mu_Rect;
+extern func mu_check_clip(ctx: *mu_Context, r: mu_Rect) sint;
+extern func mu_get_current_container(ctx: *mu_Context) *mu_Container;
+extern func mu_get_container(ctx: *mu_Context, name: *char) *mu_Container;
+extern func mu_bring_to_front(ctx: *mu_Context, cnt: *mu_Container) void;
 
+extern func mu_pool_init(ctx: *mu_Context, items: *mu_PoolItem, len: sint, id: mu_Id) sint;
+extern func mu_pool_get(ctx: *mu_Context, items: *mu_PoolItem, len: sint, id: mu_Id) sint;
+extern func mu_pool_update(ctx: *mu_Context, items: *mu_PoolItem, idx: sint) void;
+
+extern func mu_input_mousemove(ctx: *mu_Context, x: sint, y: sint) void;
+extern func mu_input_mousedown(ctx: *mu_Context, x: sint, y: sint, btn: sint) void;
+extern func mu_input_mouseup(ctx: *mu_Context, x: sint, y: sint, btn: sint) void;
+extern func mu_input_scroll(ctx: *mu_Context, x: sint, y: sint) void;
+extern func mu_input_keydown(ctx: *mu_Context, key: sint) void;
+extern func mu_input_keyup(ctx: *mu_Context, key: sint) void;
+extern func mu_input_text(ctx: *mu_Context, tex: *char) void;
+
+extern func mu_push_command(ctx: *mu_Context, type: sint, size: sint) *mu_Command;
+extern func mu_next_command(ctx: *mu_Context, cmd: **mu_Command) sint;
+extern func mu_set_clip(ctx: *mu_Context, rect: mu_Rect) void;
+extern func mu_draw_rect(ctx: *mu_Context, rect: mu_Rect, color: mu_Color) void;
+extern func mu_draw_box(ctx: *mu_Context, rect: mu_Rect, color: mu_Color) void;
+extern func mu_draw_text(ctx: *mu_Context, font: mu_Font, str: *char, len: sint, pos: mu_Vec2, color: mu_Color) void;
+extern func mu_draw_icon(ctx: *mu_Context, id: sint, rect: mu_Rect, color: mu_Color) void;
+
+extern func mu_layout_row(ctx: *mu_Context, items: sint, widths: *sint, height: sint) void;
+extern func mu_layout_width(ctx: *mu_Context, width: sint) void;
+extern func mu_layout_height(ctx: *mu_Context, height: sint) void;
+extern func mu_layout_begin_column(ctx: *mu_Context) void;
+extern func mu_layout_end_column(ctx: *mu_Context) void;
+extern func mu_layout_set_next(ctx: *mu_Context, r: mu_Rect, relative: sint) void;
 extern func mu_layout_next(ctx: *mu_Context) mu_Rect;
+
+extern func mu_draw_control_frame(ctx: *mu_Context, id: mu_Id, rect: mu_Rect, colorid: sint, opt: sint) void;
+extern func mu_draw_control_text(ctx: *mu_Context, str: *char, rect: mu_Rect, colorid: sint, opt: sint) void;
+extern func mu_mouse_over(ctx: *mu_Context, rect: mu_Rect) sint;
+extern func mu_update_control(ctx: *mu_Context, id: mu_Id, rect: mu_Rect, opt: sint) void;
 
 func mu_button(ctx: *mu_Context, label: *char) sint { return mu_button_ex(ctx, label, 0, (:sint)MU_OPT_ALIGNCENTER); }
 func mu_textbox(ctx: *mu_Context, buf: *char, bufsz: sint) sint { return mu_textbox_ex(ctx, buf, bufsz, 0); }
