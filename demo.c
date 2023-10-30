@@ -77,7 +77,7 @@ int main(void) {
             if (mu_button(ctx, "button")) {
                 puts("button pressed");
             }
-            if (mu_button_ex(ctx, "button ex", MU_ICON_MAX, MU_OPT_ALIGNCENTER)) {
+            if (mu_button_ex(ctx, "button ex", MU_ICON_CHECK, MU_OPT_ALIGNCENTER)) {
                 puts("button (ex) pressed");
             }
             if (mu_checkbox(ctx, "checkbox", &checked)) {

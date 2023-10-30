@@ -58,7 +58,7 @@ func main() void {
             if ui.button("button"){
                 std::print_line(std::out(), "button pressed");
             }
-            if ui.button_ex("button ex", smolui::ICON_MAX, smolui::OPT_ALIGNCENTER){
+            if ui.button_ex("button ex", smolui::ICON_CHECK, smolui::OPT_ALIGNCENTER){
                 std::print_line(std::out(), "button (ex) pressed");
             }
             if ui.checkbox("checkbox", &checked) {
