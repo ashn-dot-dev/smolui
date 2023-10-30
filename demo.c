@@ -33,6 +33,28 @@ float slider = 0.0;
 float number = 0.0;
 char buf_a[256] = {0};
 char buf_b[256] = {0};
+int incremented = 0;
+
+int incrementer(mu_Context *ctx, int *value) {
+    mu_Id     id = mu_get_id(ctx, &value, sizeof(value));
+    mu_Rect rect = mu_layout_next(ctx);
+    mu_update_control(ctx, id, rect, 0);
+
+    /* handle input */
+    int res = 0;
+    if (ctx->mouse_pressed == MU_MOUSE_LEFT && ctx->focus == id) {
+        (*value)++;
+        res |= MU_RES_CHANGE;
+    }
+
+    /* draw */
+    char buf[32];
+    sprintf(buf, "%d", *value);
+    mu_draw_control_frame(ctx, id, rect, MU_COLOR_BUTTON, 0);
+    mu_draw_control_text(ctx, buf, rect, MU_COLOR_TEXT, MU_OPT_ALIGNCENTER);
+
+    return res;
+}
 
 int main(void) {
     InitWindow(800, 600, "demo");
@@ -104,6 +126,11 @@ int main(void) {
             mu_begin_panel(ctx, "panel");
             mu_text(ctx, "text inside panel");
             mu_end_panel(ctx);
+
+            // custom control
+            if (incrementer(ctx, &incremented)) {
+                puts("custom incrementer interaction");
+            }
 
             mu_end_window(ctx);
         }

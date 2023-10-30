@@ -6,6 +6,29 @@ import "raylib";
 import "microui.sunder";
 import "smolui.sunder";
 
+func incrementer(ctx: *mu_Context, value: *sint) sint {
+    var id = mu_get_id(ctx, &value, (:sint)sizeof(typeof(value)));
+    var rect = mu_layout_next(ctx);
+    mu_update_control(ctx, id, rect, 0);
+
+    # handle input
+    var res: sint = 0;
+    if ctx.*.mouse_pressed == (:sint)MU_MOUSE_LEFT and ctx.*.focus == id {
+        *value = *value + 1;
+        res = res | (:sint)MU_RES_CHANGE;
+    }
+
+    # draw
+    var s = std::string::init();
+    defer s.fini();
+    var writer = std::writer::init[[std::string]](&s);
+    std::print_format(writer, "{}", (:[]std::formatter)[std::formatter::init[[sint]](value)]);
+    mu_draw_control_frame(ctx, id, rect, (:sint)MU_COLOR_BUTTON, 0);
+    mu_draw_control_text(ctx, s.cstr(), rect, (:sint)MU_COLOR_TEXT, (:sint)MU_OPT_ALIGNCENTER);
+
+    return res;
+}
+
 func main() void {
     InitWindow(800, 600, startof("demo"));
     defer CloseWindow();
@@ -20,6 +43,7 @@ func main() void {
     var checked: bool = false;
     var slider: float = 0.0;
     var number: float = 0.0;
+    var incremented: sint = 0;
 
     for not WindowShouldClose() {
         BeginDrawing();
@@ -83,6 +107,11 @@ func main() void {
             ui.begin_panel("panel");
             ui.text("text inside panel");
             ui.end_panel();
+
+            # custom control
+            if incrementer(&ui.mu_ctx, &incremented) != 0 {
+                std::print_line(std::out(), "custom incrementer interaction");
+            }
 
             ui.end_window();
         }
