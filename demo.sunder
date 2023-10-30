@@ -13,9 +13,9 @@ func incrementer(ctx: *mu_Context, value: *sint) sint {
 
     # handle input
     var res: sint = 0;
-    if ctx.*.mouse_pressed == (:sint)MU_MOUSE_LEFT and ctx.*.focus == id {
+    if ctx.*.mouse_pressed == MU_MOUSE_LEFT and ctx.*.focus == id {
         *value = *value + 1;
-        res = res | (:sint)MU_RES_CHANGE;
+        res = res | MU_RES_CHANGE;
     }
 
     # draw
@@ -23,8 +23,8 @@ func incrementer(ctx: *mu_Context, value: *sint) sint {
     defer s.fini();
     var writer = std::writer::init[[std::string]](&s);
     std::print_format(writer, "{}", (:[]std::formatter)[std::formatter::init[[sint]](value)]);
-    mu_draw_control_frame(ctx, id, rect, (:sint)MU_COLOR_BUTTON, 0);
-    mu_draw_control_text(ctx, s.cstr(), rect, (:sint)MU_COLOR_TEXT, (:sint)MU_OPT_ALIGNCENTER);
+    mu_draw_control_frame(ctx, id, rect, MU_COLOR_BUTTON, 0);
+    mu_draw_control_text(ctx, s.cstr(), rect, MU_COLOR_TEXT, MU_OPT_ALIGNCENTER);
 
     return res;
 }
