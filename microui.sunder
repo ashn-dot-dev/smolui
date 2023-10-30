@@ -196,6 +196,10 @@ struct mu_Context {
     var input_text: [32]char;
 }
 
+extern func mu_vec2(x: sint, y: sint) mu_Vec2;
+extern func mu_rect(x: sint, y: sint, w: sint, h: sint) mu_Rect;
+extern func mu_color(r: sint, g: sint, b: sint, a: sint) mu_Color;
+
 extern func mu_init(ctx: *mu_Context) void;
 extern func mu_begin(ctx: *mu_Context) void;
 extern func mu_end(ctx: *mu_Context) void;
