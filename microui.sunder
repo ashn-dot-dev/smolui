@@ -22,7 +22,7 @@ let MU_COMMAND_CLIP: sint = 2;
 let MU_COMMAND_RECT: sint = 3;
 let MU_COMMAND_TEXT: sint = 4;
 let MU_COMMAND_ICON: sint = 5;
-let MU_COMMAND_MAX:  sint = 6;
+let MU_COMMAND_MAX:  usize = 6;
 
 let MU_COLOR_TEXT:        sint = 0;
 let MU_COLOR_BORDER:      sint = 1;
@@ -38,13 +38,13 @@ let MU_COLOR_BASEHOVER:   sint = 10;
 let MU_COLOR_BASEFOCUS:   sint = 11;
 let MU_COLOR_SCROLLBASE:  sint = 12;
 let MU_COLOR_SCROLLTHUMB: sint = 13;
-let MU_COLOR_MAX:         sint = 14;
+let MU_COLOR_MAX:         usize = 14;
 
 let MU_ICON_CLOSE:     sint = 1;
 let MU_ICON_CHECK:     sint = 2;
 let MU_ICON_COLLAPSED: sint = 3;
 let MU_ICON_EXPANDED:  sint = 4;
-let MU_ICON_MAX:       sint = 5;
+let MU_ICON_MAX:       usize = 5;
 
 let MU_RES_ACTIVE      = (:sint)(1u << 0);
 let MU_RES_SUBMIT      = (:sint)(1u << 1);
