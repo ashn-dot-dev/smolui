@@ -1,6 +1,18 @@
 import "c";
 
-let MU_SLIDER_FMT = startof("%.2f");
+let MU_COMMANDLIST_SIZE     = 256u * 1024u;
+let MU_ROOTLIST_SIZE        = 32u;
+let MU_CONTAINERSTACK_SIZE  = 32u;
+let MU_CLIPSTACK_SIZE       = 32u;
+let MU_IDSTACK_SIZE         = 32u;
+let MU_LAYOUTSTACK_SIZE     = 16u;
+let MU_CONTAINERPOOL_SIZE   = 48u;
+let MU_TREENODEPOOL_SIZE    = 48u;
+let MU_MAX_WIDTHS           = 16u;
+alias MU_REAL               = float;
+let MU_REAL_FMT             = startof("%.3g");
+let MU_SLIDER_FMT           = startof("%.2f");
+let MU_MAX_FMT              = 127u;
 
 alias MU_CLIP = enum {
     MU_CLIP_PART = 1;
@@ -78,15 +90,111 @@ alias MU_KEY = enum {
     MU_KEY_RETURN       = (1u << 4);
 };
 
-alias mu_Context = any; # opaque
 alias mu_Id = uint;
-alias mu_Real = float;
+alias mu_Real = MU_REAL;
 alias mu_Font = *any;
 
 struct mu_Vec2 { var x: sint; var y: sint; }
 struct mu_Rect { var x: sint; var y: sint; var w: sint; var h: sint; }
 struct mu_Color { var r: u8; var g: u8; var b: u8; var a: u8; }
 struct mu_PoolItem { var id: mu_Id; var last_update: sint; }
+
+struct mu_BaseCommand { var type: sint; var size: sint; }
+struct mu_JumpCommand { var base: mu_BaseCommand; var dst: *any; }
+struct mu_ClipCommand { var base: mu_BaseCommand; var rect: mu_Rect; }
+struct mu_RectCommand { var base: mu_BaseCommand; var rect: mu_Rect; var color: mu_Color; }
+struct mu_TextCommand { var base: mu_BaseCommand; var font: mu_Font; var pos: mu_Vec2; var color: mu_Color; var str: [1]char; }
+struct mu_IconCommand { var base: mu_BaseCommand; var rect: mu_Rect; var id: sint; var color: mu_Color; }
+
+union mu_Command {
+    var type: sint;
+    var base: mu_BaseCommand;
+    var jump: mu_JumpCommand;
+    var clip: mu_ClipCommand;
+    var rect: mu_RectCommand;
+    var text: mu_TextCommand;
+    var icon: mu_IconCommand;
+}
+
+struct mu_Layout {
+    var body: mu_Rect;
+    var next: mu_Rect;
+    var position: mu_Vec2;
+    var size: mu_Vec2;
+    var max: mu_Vec2;
+    var widths: [MU_MAX_WIDTHS]sint;
+    var items: sint;
+    var item_index: sint;
+    var next_row: sint;
+    var next_type: sint;
+    var indent: sint;
+}
+
+struct mu_Container {
+    var head: *mu_Command;
+    var tail: *mu_Command;
+    var rect: mu_Rect;
+    var body: mu_Rect;
+    var content_size: mu_Vec2;
+    var scroll: mu_Vec2;
+    var zindex: sint;
+    var open: sint;
+}
+
+struct mu_Style {
+    var font: mu_Font;
+    var size: mu_Vec2;
+    var padding: sint;
+    var spacing: sint;
+    var indent: sint;
+    var title_height: sint;
+    var scrollbar_size: sint;
+    var thumb_size: sint;
+    var colors: [(:usize)MU_COLOR_MAX]mu_Color;
+}
+
+struct mu_Context {
+    # callbacks
+    var text_width: func(mu_Font, *char, sint) sint;
+    var text_height: func(mu_Font) sint;
+    var draw_frame: func(mu_Context, mu_Rect, sint) void;
+    # core state
+    var _style: mu_Style;
+    var style: *mu_Style;
+    var hover: mu_Id;
+    var focus: mu_Id;
+    var last_id: mu_Id;
+    var last_rect: mu_Rect;
+    var last_zindex: sint;
+    var updated_focus: sint;
+    var frame: sint;
+    var hover_root: *mu_Container;
+    var next_hover_root: *mu_Container;
+    var scroll_target: *mu_Container;
+    var number_edit_buf: [MU_MAX_FMT]char;
+    var number_edit: mu_Id;
+    # stacks
+    var command_list: struct { var idx: sint; var items: [MU_COMMANDLIST_SIZE]char; };
+    var root_list: struct { var idx: sint; var items: [MU_ROOTLIST_SIZE]*mu_Container; };
+    var container_stack: struct { var idx: sint; var items: [MU_CONTAINERSTACK_SIZE]*mu_Container; };
+    var clip_stack: struct { var idx: sint; var items: [MU_CLIPSTACK_SIZE]mu_Rect; };
+    var id_stack: struct { var idx: sint; var items: [MU_IDSTACK_SIZE]mu_Id; };
+    var layout_stack: struct { var idx: sint; var items: [MU_LAYOUTSTACK_SIZE]mu_Layout; };
+    # retained state pools
+    var container_pool: [MU_CONTAINERPOOL_SIZE]mu_PoolItem;
+    var containers: [MU_CONTAINERPOOL_SIZE]mu_Container;
+    var treenode_pool: [MU_TREENODEPOOL_SIZE]mu_PoolItem;
+    # input state
+    var mouse_pos: mu_Vec2;
+    var last_mouse_pos: mu_Vec2;
+    var mouse_delta: mu_Vec2;
+    var scroll_delta: mu_Vec2;
+    var mouse_down: sint;
+    var mouse_pressed: sint;
+    var key_down: sint;
+    var key_pressed: sint;
+    var input_text: [32]char;
+}
 
 extern func mu_init(ctx: *mu_Context) void;
 extern func mu_begin(ctx: *mu_Context) void;
