@@ -1,6 +1,6 @@
 # smolui
 
-A fork of [microui](https://github.com/rxi/microui) incorperating code from the
+A fork of [microui](https://github.com/rxi/microui) incorporating code from the
 [microui-raylib](https://github.com/marionauta/microui-raylib) backend.
 
 ## License
