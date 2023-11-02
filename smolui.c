@@ -33,7 +33,7 @@ smol_setup_font(mu_Context* ctx, Font const* font)
     ctx->style->font = (mu_Font)font;
     ctx->text_width = smol_text_width;
     ctx->text_height = smol_text_height;
-    ctx->style->spacing = SMOLUI_TEXT_SPACING;
+    ctx->style->spacing = SMOL_TEXT_SPACING;
 }
 
 int
@@ -44,8 +44,8 @@ smol_text_width(mu_Font font, char const* str, int len)
     // to strndup if len exceeds the size of the buffer.
     char* dup = strndup(str, (size_t)len);
     assert(dup != NULL);
-    Font rlfont = SMOLUI_FONT_FROM_MU(font);
-    Vector2 size = MeasureTextEx(rlfont, dup, rlfont.baseSize, SMOLUI_TEXT_SPACING);
+    Font rlfont = SMOL_FONT_FROM_MU(font);
+    Vector2 size = MeasureTextEx(rlfont, dup, rlfont.baseSize, SMOL_TEXT_SPACING);
     free(dup);
     return size.x;
 }
@@ -53,7 +53,7 @@ smol_text_width(mu_Font font, char const* str, int len)
 int
 smol_text_height(mu_Font font)
 {
-    Font rlfont = SMOLUI_FONT_FROM_MU(font);
+    Font rlfont = SMOL_FONT_FROM_MU(font);
     return rlfont.baseSize;
 }
 
@@ -157,10 +157,10 @@ smol_render(mu_Context* ctx)
     while (mu_next_command(ctx, &cmd)) {
         switch (cmd->type) {
         case MU_COMMAND_TEXT: {
-            Font font = SMOLUI_FONT_FROM_MU(cmd->text.font);
-            Vector2 text_position = SMOLUI_VECTOR2_FROM_MU(cmd->text.pos);
+            Font font = SMOL_FONT_FROM_MU(cmd->text.font);
+            Vector2 text_position = SMOL_VECTOR2_FROM_MU(cmd->text.pos);
             int font_size = ctx->text_height(&font);
-            Color text_color = SMOLUI_COLOR_FROM_MU(cmd->text.color);
+            Color text_color = SMOL_COLOR_FROM_MU(cmd->text.color);
             DrawTextEx(
                 font,
                 cmd->text.str,
@@ -171,13 +171,13 @@ smol_render(mu_Context* ctx)
         } break;
 
         case MU_COMMAND_RECT: {
-            Rectangle rect = SMOLUI_RECTANGLE_FROM_MU(cmd->rect.rect);
-            Color rect_color = SMOLUI_COLOR_FROM_MU(cmd->rect.color);
+            Rectangle rect = SMOL_RECTANGLE_FROM_MU(cmd->rect.rect);
+            Color rect_color = SMOL_COLOR_FROM_MU(cmd->rect.color);
             DrawRectangleRec(rect, rect_color);
         } break;
 
         case MU_COMMAND_ICON: {
-            Color icon_color = SMOLUI_COLOR_FROM_MU(cmd->icon.color);
+            Color icon_color = SMOL_COLOR_FROM_MU(cmd->icon.color);
             char* icon = "?";
             switch (cmd->icon.id) {
             case MU_ICON_CLOSE: {

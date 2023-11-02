@@ -12,20 +12,20 @@
 #include <raylib.h>
 #include "microui.h"
 
-#define SMOLUI_TEXT_SPACING 1
+#define SMOL_TEXT_SPACING 1
 
 // Create a raylib Color from a microui mu_Color.
-#define SMOLUI_COLOR_FROM_MU(c) ((Color){c.r, c.g, c.b, c.a})
+#define SMOL_COLOR_FROM_MU(c) ((Color){c.r, c.g, c.b, c.a})
 
 // Create a raylib Font from a microui mu_Font.
 // If `f` is `NULL` get the default raylib font.
-#define SMOLUI_FONT_FROM_MU(f) ((f == NULL) ? GetFontDefault() : *(Font*)f)
+#define SMOL_FONT_FROM_MU(f) ((f == NULL) ? GetFontDefault() : *(Font*)f)
 
 // Create a raylib Rectangle from a microui mu_Rect.
-#define SMOLUI_RECTANGLE_FROM_MU(r) ((Rectangle){r.x, r.y, r.w, r.h})
+#define SMOL_RECTANGLE_FROM_MU(r) ((Rectangle){r.x, r.y, r.w, r.h})
 
 // Create a raylib Vector2 from a microui mu_Vec2.
-#define SMOLUI_VECTOR2_FROM_MU(v) ((Vector2){v.x, v.y})
+#define SMOL_VECTOR2_FROM_MU(v) ((Vector2){v.x, v.y})
 
 // Set the text height/width callbacks and the font.
 // Providing a NULL font pointer wll use the default raylib font.
