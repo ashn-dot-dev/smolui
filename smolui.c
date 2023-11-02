@@ -97,7 +97,7 @@ smol_handle_mouse_buttons_input(mu_Context* ctx, int x, int y)
         {MOUSE_BUTTON_MIDDLE, MU_MOUSE_MIDDLE},
         {-1, -1},
     };
-    for (size_t index = 0;; index++) {
+    for (size_t index = 0;; ++index) {
         struct mouse_button_map button = mouse_buttons[index];
         if (button.rl == -1U) {
             break;
@@ -129,7 +129,7 @@ smol_handle_keyboard_input(mu_Context* ctx)
         {KEY_BACKSPACE,     MU_KEY_BACKSPACE},
         {-1, -1},
     };
-    for (size_t index = 0;; index++) {
+    for (size_t index = 0;; ++index) {
         struct key_map key = keyboard_keys[index];
         if (key.rl == -1U) {
             break;
@@ -147,7 +147,7 @@ static void
 smol_handle_text_input(mu_Context* ctx)
 {
     char buffer[512];
-    for (size_t index = 0; index < 512; index++) {
+    for (size_t index = 0; index < sizeof(buffer); ++index) {
         char c = GetCharPressed();
         buffer[index] = c;
         if (c == '\0') {
@@ -189,30 +189,34 @@ smol_render(mu_Context* ctx)
                 font_size,
                 ctx->style->spacing,
                 text_color);
-        } break;
-
+            break;
+        }
         case MU_COMMAND_RECT: {
             Rectangle rect = SMOL_RECTANGLE_FROM_MU(cmd->rect.rect);
             Color rect_color = SMOL_COLOR_FROM_MU(cmd->rect.color);
             DrawRectangleRec(rect, rect_color);
-        } break;
-
+            break;
+        }
         case MU_COMMAND_ICON: {
             Color icon_color = SMOL_COLOR_FROM_MU(cmd->icon.color);
             char* icon = "?";
             switch (cmd->icon.id) {
             case MU_ICON_CLOSE: {
                 icon = "x";
-            } break;
+                break;
+            }
             case MU_ICON_CHECK: {
                 icon = "*";
-            } break;
+                break;
+            }
             case MU_ICON_COLLAPSED: {
                 icon = "+";
-            } break;
+                break;
+            }
             case MU_ICON_EXPANDED: {
                 icon = "-";
-            } break;
+                break;
+            }
             default:
                 assert(0 && "unreachable");
             }
@@ -222,7 +226,8 @@ smol_render(mu_Context* ctx)
                 cmd->icon.rect.y,
                 cmd->icon.rect.h,
                 icon_color);
-        } break;
+            break;
+        }
 
         case MU_COMMAND_CLIP: {
             EndScissorMode();
@@ -231,11 +236,11 @@ smol_render(mu_Context* ctx)
                 cmd->clip.rect.y,
                 cmd->clip.rect.w,
                 cmd->clip.rect.h);
-        } break;
+            break;
+        }
 
         default:
             assert(0 && "unreachable");
-            break;
         }
     }
 
