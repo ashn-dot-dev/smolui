@@ -62,13 +62,13 @@ int main(void) {
 
     mu_Context ctx = {0};
     mu_init(&ctx);
-    smolui_setup_font(&ctx, NULL);
+    smol_setup_font(&ctx, NULL);
 
     while (!WindowShouldClose()) {
         BeginDrawing();
         ClearBackground(BLACK);
 
-        smolui_handle_input(&ctx);
+        smol_handle_input(&ctx);
         mu_begin(&ctx);
 
         if (mu_begin_window_ex(&ctx, "Hello", mu_rect(20, 20, 800 - 2 * 20, 600 - 2 * 20), MU_OPT_NOCLOSE)) {
@@ -136,7 +136,7 @@ int main(void) {
         }
 
         mu_end(&ctx);
-        smolui_render(&ctx);
+        smol_render(&ctx);
         EndDrawing();
     }
 

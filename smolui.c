@@ -28,16 +28,16 @@
 #include "smolui.h"
 
 void
-smolui_setup_font(mu_Context* ctx, Font const* font)
+smol_setup_font(mu_Context* ctx, Font const* font)
 {
     ctx->style->font = (mu_Font)font;
-    ctx->text_width = smolui_text_width;
-    ctx->text_height = smolui_text_height;
+    ctx->text_width = smol_text_width;
+    ctx->text_height = smol_text_height;
     ctx->style->spacing = SMOLUI_TEXT_SPACING;
 }
 
 int
-smolui_text_width(mu_Font font, char const* str, int len)
+smol_text_width(mu_Font font, char const* str, int len)
 {
     // TODO: There is no MeasureText function that takes a character slice, so
     // we are forced to allocate. See we can use a fixed buffer with a fallback
@@ -51,21 +51,21 @@ smolui_text_width(mu_Font font, char const* str, int len)
 }
 
 int
-smolui_text_height(mu_Font font)
+smol_text_height(mu_Font font)
 {
     Font rlfont = SMOLUI_FONT_FROM_MU(font);
     return rlfont.baseSize;
 }
 
 void
-smolui_handle_mouse_scroll(mu_Context* ctx)
+smol_handle_mouse_scroll(mu_Context* ctx)
 {
     Vector2 mouse_wheel_scroll = GetMouseWheelMoveV();
     mu_input_scroll(ctx, (int)mouse_wheel_scroll.x * -30, (int)mouse_wheel_scroll.y * -30);
 }
 
 void
-smolui_handle_mouse_buttons_input_ex(mu_Context* ctx, int x, int y)
+smol_handle_mouse_buttons_input_ex(mu_Context* ctx, int x, int y)
 {
     static struct mouse_button_map {
         MouseButton rl;
@@ -91,7 +91,7 @@ smolui_handle_mouse_buttons_input_ex(mu_Context* ctx, int x, int y)
 }
 
 void
-smolui_handle_keyboard_input(mu_Context* ctx)
+smol_handle_keyboard_input(mu_Context* ctx)
 {
     static struct key_map {
         KeyboardKey rl;
@@ -123,7 +123,7 @@ smolui_handle_keyboard_input(mu_Context* ctx)
 }
 
 void
-smolui_handle_text_input(mu_Context* ctx)
+smol_handle_text_input(mu_Context* ctx)
 {
     char buffer[512];
     for (size_t index = 0; index < 512; index++) {
@@ -137,19 +137,19 @@ smolui_handle_text_input(mu_Context* ctx)
 }
 
 void
-smolui_handle_input(mu_Context* ctx)
+smol_handle_input(mu_Context* ctx)
 {
     int mouse_position_x = GetMouseX();
     int mouse_position_y = GetMouseY();
     mu_input_mousemove(ctx, mouse_position_x, mouse_position_y);
-    smolui_handle_mouse_scroll(ctx);
-    smolui_handle_mouse_buttons_input_ex(ctx, mouse_position_x, mouse_position_y);
-    smolui_handle_keyboard_input(ctx);
-    smolui_handle_text_input(ctx);
+    smol_handle_mouse_scroll(ctx);
+    smol_handle_mouse_buttons_input_ex(ctx, mouse_position_x, mouse_position_y);
+    smol_handle_keyboard_input(ctx);
+    smol_handle_text_input(ctx);
 }
 
 void
-smolui_render(mu_Context* ctx)
+smol_render(mu_Context* ctx)
 {
     BeginScissorMode(0, 0, GetScreenWidth(), GetScreenHeight());
 

@@ -29,36 +29,36 @@
 
 // Set the text height/width callbacks and the font.
 // Providing a NULL font pointer wll use the default raylib font.
-void smolui_setup_font(mu_Context* ctx, Font const* font);
+void smol_setup_font(mu_Context* ctx, Font const* font);
 
-// `mu_Context.text_width` callback. See `smolui_setup_font`.
-int smolui_text_width(mu_Font font, char const* str, int len);
+// `mu_Context.text_width` callback. See `smol_setup_font`.
+int smol_text_width(mu_Font font, char const* str, int len);
 
-// `mu_Context.text_height` callback. See `smolui_setup_font`.
-int smolui_text_height(mu_Font font);
+// `mu_Context.text_height` callback. See `smol_setup_font`.
+int smol_text_height(mu_Font font);
 
 // Handle all keyboard & mouse events.
-void smolui_handle_input(mu_Context* ctx);
+void smol_handle_input(mu_Context* ctx);
 
 // Handle mouse cursor position update.
-#define smolui_handle_mouse_move(ctx)                                          \
+#define smol_handle_mouse_move(ctx)                                            \
     mu_input_mousemove(ctx, GetMouseX(), GetMouseY())
 
 // Handle mouse wheel scroll.
-void smolui_handle_mouse_scroll(mu_Context* ctx);
+void smol_handle_mouse_scroll(mu_Context* ctx);
 
 // Handle right, left & middle clicks.
-void smolui_handle_mouse_buttons_input_ex(mu_Context* ctx, int x, int y);
-#define smolui_handle_mouse_buttons_input(ctx)                                 \
-    smolui_handle_mouse_buttons_input_ex(ctx, GetMouseX(), GetMouseY())
+void smol_handle_mouse_buttons_input_ex(mu_Context* ctx, int x, int y);
+#define smol_handle_mouse_buttons_input(ctx)                                   \
+    smol_handle_mouse_buttons_input_ex(ctx, GetMouseX(), GetMouseY())
 
 // Handle shift, control, alt, enter & backspace presses.
-void smolui_handle_keyboard_input(mu_Context* ctx);
+void smol_handle_keyboard_input(mu_Context* ctx);
 
 // Handle text input.
-void smolui_handle_text_input(mu_Context* ctx);
+void smol_handle_text_input(mu_Context* ctx);
 
 // Draw controls, text & icons using raylib.
-void smolui_render(mu_Context* ctx);
+void smol_render(mu_Context* ctx);
 
 #endif // SMOLUI_H
