@@ -49,9 +49,7 @@ int smol_text_width(mu_Font font, char const* str, int len);
 int smol_text_height(mu_Font font);
 
 // Handle right, left & middle clicks.
-void smol_handle_mouse_buttons_input_ex(mu_Context* ctx, int x, int y);
-#define smol_handle_mouse_buttons_input(ctx)                                   \
-    smol_handle_mouse_buttons_input_ex(ctx, GetMouseX(), GetMouseY())
+void smol_handle_mouse_buttons_input(mu_Context* ctx, int x, int y);
 
 // Handle shift, control, alt, enter & backspace presses.
 void smol_handle_keyboard_input(mu_Context* ctx);
@@ -97,7 +95,7 @@ smol_handle_mouse_scroll(mu_Context* ctx)
 }
 
 void
-smol_handle_mouse_buttons_input_ex(mu_Context* ctx, int x, int y)
+smol_handle_mouse_buttons_input(mu_Context* ctx, int x, int y)
 {
     static struct mouse_button_map {
         MouseButton rl;
@@ -175,7 +173,7 @@ smol_handle_input(mu_Context* ctx)
     int mouse_position_y = GetMouseY();
     mu_input_mousemove(ctx, mouse_position_x, mouse_position_y);
     smol_handle_mouse_scroll(ctx);
-    smol_handle_mouse_buttons_input_ex(ctx, mouse_position_x, mouse_position_y);
+    smol_handle_mouse_buttons_input(ctx, mouse_position_x, mouse_position_y);
     smol_handle_keyboard_input(ctx);
     smol_handle_text_input(ctx);
 }
