@@ -60,33 +60,33 @@ int main(void) {
     InitWindow(800, 600, "demo");
     SetTargetFPS(60);
 
-    mu_Context* ctx = smolui_mu_context_new();
-    mu_init(ctx);
-    smolui_setup_font(ctx, NULL);
+    mu_Context ctx = {0};
+    mu_init(&ctx);
+    smolui_setup_font(&ctx, NULL);
 
     while (!WindowShouldClose()) {
         BeginDrawing();
         ClearBackground(BLACK);
 
-        smolui_handle_input(ctx);
-        mu_begin(ctx);
+        smolui_handle_input(&ctx);
+        mu_begin(&ctx);
 
-        if (mu_begin_window_ex(ctx, "Hello", mu_rect(20, 20, 800 - 2 * 20, 600 - 2 * 20), MU_OPT_NOCLOSE)) {
-            mu_text(ctx, "some text");
-            mu_label(ctx, "label");
-            if (mu_button(ctx, "button")) {
+        if (mu_begin_window_ex(&ctx, "Hello", mu_rect(20, 20, 800 - 2 * 20, 600 - 2 * 20), MU_OPT_NOCLOSE)) {
+            mu_text(&ctx, "some text");
+            mu_label(&ctx, "label");
+            if (mu_button(&ctx, "button")) {
                 puts("button pressed");
             }
-            if (mu_button_ex(ctx, "button ex", MU_ICON_CHECK, MU_OPT_ALIGNCENTER)) {
+            if (mu_button_ex(&ctx, "button ex", MU_ICON_CHECK, MU_OPT_ALIGNCENTER)) {
                 puts("button (ex) pressed");
             }
-            if (mu_checkbox(ctx, "checkbox", &checked)) {
+            if (mu_checkbox(&ctx, "checkbox", &checked)) {
                 puts("checkbox interaction");
             }
-            if (mu_textbox(ctx, buf_a, sizeof(buf_a))) {
+            if (mu_textbox(&ctx, buf_a, sizeof(buf_a))) {
                 puts("textbox interaction");
             }
-            int textbox_ex_res = mu_textbox_ex(ctx, buf_b, sizeof(buf_b), MU_OPT_ALIGNCENTER);
+            int textbox_ex_res = mu_textbox_ex(&ctx, buf_b, sizeof(buf_b), MU_OPT_ALIGNCENTER);
             if (textbox_ex_res) {
                 puts("textbox interaction");
                 if (textbox_ex_res & MU_RES_SUBMIT) {
@@ -96,51 +96,50 @@ int main(void) {
                     puts("\ttextbox change");
                 }
             }
-            if (mu_slider(ctx, &slider, 0.0, 100.0)) {
+            if (mu_slider(&ctx, &slider, 0.0, 100.0)) {
                 puts("slider interaction");
             }
-            if (mu_number(ctx, &number, 5.0)) {
+            if (mu_number(&ctx, &number, 5.0)) {
                 puts("number interaction");
             }
-            if (mu_header(ctx, "header")) {
-                mu_text(ctx, "text under header");
+            if (mu_header(&ctx, "header")) {
+                mu_text(&ctx, "text under header");
             }
-            if (mu_header_ex(ctx, "header ex", MU_OPT_EXPANDED)) {
-                mu_text(ctx, "text under header (ex)");
+            if (mu_header_ex(&ctx, "header ex", MU_OPT_EXPANDED)) {
+                mu_text(&ctx, "text under header (ex)");
             }
-            if (mu_begin_treenode(ctx, "treenode")) {
-                mu_text(ctx, "text under treenode");
-                mu_end_treenode(ctx);
+            if (mu_begin_treenode(&ctx, "treenode")) {
+                mu_text(&ctx, "text under treenode");
+                mu_end_treenode(&ctx);
             }
-            if (mu_begin_treenode_ex(ctx, "treenode ex", MU_OPT_EXPANDED)) {
-                mu_text(ctx, "text under treenode (ex)");
-                mu_end_treenode(ctx);
+            if (mu_begin_treenode_ex(&ctx, "treenode ex", MU_OPT_EXPANDED)) {
+                mu_text(&ctx, "text under treenode (ex)");
+                mu_end_treenode(&ctx);
             }
-            if (mu_button(ctx, "open popup")) {
-                mu_open_popup(ctx, "popup");
+            if (mu_button(&ctx, "open popup")) {
+                mu_open_popup(&ctx, "popup");
             }
-            if (mu_begin_popup(ctx, "popup")) {
-                mu_text(ctx, "text inside popup");
-                mu_end_popup(ctx);
+            if (mu_begin_popup(&ctx, "popup")) {
+                mu_text(&ctx, "text inside popup");
+                mu_end_popup(&ctx);
             }
-            mu_begin_panel(ctx, "panel");
-            mu_text(ctx, "text inside panel");
-            mu_end_panel(ctx);
+            mu_begin_panel(&ctx, "panel");
+            mu_text(&ctx, "text inside panel");
+            mu_end_panel(&ctx);
 
             // custom control
-            if (incrementer(ctx, &incremented)) {
+            if (incrementer(&ctx, &incremented)) {
                 puts("custom incrementer interaction");
             }
 
-            mu_end_window(ctx);
+            mu_end_window(&ctx);
         }
 
-        mu_end(ctx);
-        smolui_render(ctx);
+        mu_end(&ctx);
+        smolui_render(&ctx);
         EndDrawing();
     }
 
-    smolui_mu_context_del(ctx);
     CloseWindow();
     return 0;
 }

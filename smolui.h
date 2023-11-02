@@ -12,9 +12,6 @@
 #include <raylib.h>
 #include "microui.h"
 
-mu_Context* smolui_mu_context_new(void);
-void smolui_mu_context_del(mu_Context* ctx);
-
 #define SMOLUI_TEXT_SPACING 1
 
 // Create a raylib Color from a microui mu_Color.
