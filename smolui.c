@@ -48,15 +48,6 @@ int smol_text_width(mu_Font font, char const* str, int len);
 // `mu_Context.text_height` callback. See `smol_setup_font`.
 int smol_text_height(mu_Font font);
 
-// Handle right, left & middle clicks.
-void smol_handle_mouse_buttons_input(mu_Context* ctx, int x, int y);
-
-// Handle shift, control, alt, enter & backspace presses.
-void smol_handle_keyboard_input(mu_Context* ctx);
-
-// Handle text input.
-void smol_handle_text_input(mu_Context* ctx);
-
 void
 smol_setup_font(mu_Context* ctx, Font const* font)
 {
@@ -87,14 +78,14 @@ smol_text_height(mu_Font font)
     return rlfont.baseSize;
 }
 
-void
+static void
 smol_handle_mouse_scroll(mu_Context* ctx)
 {
     Vector2 mouse_wheel_scroll = GetMouseWheelMoveV();
     mu_input_scroll(ctx, (int)mouse_wheel_scroll.x * -30, (int)mouse_wheel_scroll.y * -30);
 }
 
-void
+static void
 smol_handle_mouse_buttons_input(mu_Context* ctx, int x, int y)
 {
     static struct mouse_button_map {
@@ -120,7 +111,7 @@ smol_handle_mouse_buttons_input(mu_Context* ctx, int x, int y)
     }
 }
 
-void
+static void
 smol_handle_keyboard_input(mu_Context* ctx)
 {
     static struct key_map {
@@ -152,7 +143,7 @@ smol_handle_keyboard_input(mu_Context* ctx)
     }
 }
 
-void
+static void
 smol_handle_text_input(mu_Context* ctx)
 {
     char buffer[512];
