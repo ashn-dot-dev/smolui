@@ -36,7 +36,7 @@ let OPT_CLOSED      = MU_OPT_CLOSED;
 let OPT_EXPANDED    = MU_OPT_EXPANDED;
 
 struct ui {
-    var mu_ctx: mu_Context;
+    var context: mu_Context;
 
     # Init a UI context with provided font.
     # Providing a NULL font pointer wll use the default raylib font.
@@ -44,50 +44,50 @@ struct ui {
         var ctx: mu_Context = uninit;
         mu_init(&ctx);
         setup_font(&ctx, font);
-        return (:ui){.mu_ctx = ctx};
+        return (:ui){.context = ctx};
     }
 
     func handle_input(self: *ui) void {
-        smol::handle_input(&self.*.mu_ctx);
+        smol::handle_input(&self.*.context);
     }
 
     func begin(self: *ui) void {
-        mu_begin(&self.*.mu_ctx);
+        mu_begin(&self.*.context);
     }
 
     func end(self: *ui) void {
-        mu_end(&self.*.mu_ctx);
+        mu_end(&self.*.context);
     }
 
     func text(self: *ui, text: []byte) void {
         var s = std::string::init_from_str(text);
         defer s.fini();
-        mu_text(&self.*.mu_ctx, s.cstr());
+        mu_text(&self.*.context, s.cstr());
     }
 
     func label(self: *ui, text: []byte) void {
         var s = std::string::init_from_str(text);
         defer s.fini();
-        mu_label(&self.*.mu_ctx, s.cstr());
+        mu_label(&self.*.context, s.cstr());
     }
 
     func button(self: *ui, text: []byte) bool {
         var s = std::string::init_from_str(text);
         defer s.fini();
-        return mu_button(&self.*.mu_ctx, s.cstr()) != 0;
+        return mu_button(&self.*.context, s.cstr()) != 0;
     }
 
     func button_ex(self: *ui, text: []byte, icon: sint, opt: sint) bool {
         var s = std::string::init_from_str(text);
         defer s.fini();
-        return mu_button_ex(&self.*.mu_ctx, s.cstr(), icon, opt) != 0;
+        return mu_button_ex(&self.*.context, s.cstr(), icon, opt) != 0;
     }
 
     func checkbox(self: *ui, text: []byte, state: *bool) bool {
         var s = std::string::init_from_str(text);
         defer s.fini();
         var int = (:sint)*state;
-        var res = mu_checkbox(&self.*.mu_ctx, s.cstr(), &int) != 0;
+        var res = mu_checkbox(&self.*.context, s.cstr(), &int) != 0;
         *state = (:bool)int;
         return res;
     }
@@ -101,99 +101,99 @@ struct ui {
         # address of the std::string as the ID rather than the hashed value of
         # the buffer address that mu_textbox_ex would normally use.
         var id = (:mu_Id)(:usize)text;
-        var r = mu_layout_next(&self.*.mu_ctx);
+        var r = mu_layout_next(&self.*.context);
         let INPUT_TEXT_SIZE = 32u;
         text.*.reserve(text.*.count() + INPUT_TEXT_SIZE);
-        var res = mu_textbox_raw(&self.*.mu_ctx, text.*.start(), (:sint)(text.*.capacity() + countof("\0")), id, r, opt);
+        var res = mu_textbox_raw(&self.*.context, text.*.start(), (:sint)(text.*.capacity() + countof("\0")), id, r, opt);
         text.*.resize(std::cstr::count(text.*.cstr()));
         return res;
     }
 
     func slider(self: *ui, value: *float, lo: float, hi: float) bool {
-        return mu_slider(&self.*.mu_ctx, value, lo, hi) != 0;
+        return mu_slider(&self.*.context, value, lo, hi) != 0;
     }
 
     func number(self: *ui, value: *float, step: float) bool {
-        return mu_number(&self.*.mu_ctx, value, step) != 0;
+        return mu_number(&self.*.context, value, step) != 0;
     }
 
     func header(self: *ui, text: []byte) bool {
         var s = std::string::init_from_str(text);
         defer s.fini();
-        return mu_header(&self.*.mu_ctx, s.cstr()) != 0;
+        return mu_header(&self.*.context, s.cstr()) != 0;
     }
 
     func header_ex(self: *ui, text: []byte, opt: sint) bool {
         var s = std::string::init_from_str(text);
         defer s.fini();
-        return mu_header_ex(&self.*.mu_ctx, s.cstr(), opt) != 0;
+        return mu_header_ex(&self.*.context, s.cstr(), opt) != 0;
     }
 
     func begin_treenode(self: *ui, text: []byte) bool {
         var s = std::string::init_from_str(text);
         defer s.fini();
-        return mu_begin_treenode(&self.*.mu_ctx, s.cstr()) != 0;
+        return mu_begin_treenode(&self.*.context, s.cstr()) != 0;
     }
 
     func begin_treenode_ex(self: *ui, text: []byte, opt: sint) bool {
         var s = std::string::init_from_str(text);
         defer s.fini();
-        return mu_begin_treenode_ex(&self.*.mu_ctx, s.cstr(), opt) != 0;
+        return mu_begin_treenode_ex(&self.*.context, s.cstr(), opt) != 0;
     }
 
     func end_treenode(self: *ui) void {
-        mu_end_treenode(&self.*.mu_ctx);
+        mu_end_treenode(&self.*.context);
     }
 
     func begin_window(self: *ui, title: []byte, rect: rect) bool {
         var s = std::string::init_from_str(title);
         defer s.fini();
-        return mu_begin_window(&self.*.mu_ctx, s.cstr(), rect) != 0;
+        return mu_begin_window(&self.*.context, s.cstr(), rect) != 0;
     }
 
     func begin_window_ex(self: *ui, title: []byte, rect: rect, opt: sint) bool {
         var s = std::string::init_from_str(title);
         defer s.fini();
-        return mu_begin_window_ex(&self.*.mu_ctx, s.cstr(), rect, opt) != 0;
+        return mu_begin_window_ex(&self.*.context, s.cstr(), rect, opt) != 0;
     }
 
     func end_window(self: *ui) void {
-        mu_end_window(&self.*.mu_ctx);
+        mu_end_window(&self.*.context);
     }
 
     func open_popup(self: *ui, name: []byte) void {
         var s = std::string::init_from_str(name);
         defer s.fini();
-        mu_open_popup(&self.*.mu_ctx, s.cstr());
+        mu_open_popup(&self.*.context, s.cstr());
     }
 
     func begin_popup(self: *ui, name: []byte) bool {
         var s = std::string::init_from_str(name);
         defer s.fini();
-        return mu_begin_popup(&self.*.mu_ctx, s.cstr()) != 0;
+        return mu_begin_popup(&self.*.context, s.cstr()) != 0;
     }
 
     func end_popup(self: *ui) void {
-        mu_end_popup(&self.*.mu_ctx);
+        mu_end_popup(&self.*.context);
     }
 
     func begin_panel(self: *ui, name: []byte) void {
         var s = std::string::init_from_str(name);
         defer s.fini();
-        mu_begin_panel(&self.*.mu_ctx, s.cstr());
+        mu_begin_panel(&self.*.context, s.cstr());
     }
 
     func begin_panel_ex(self: *ui, name: []byte, opt: sint) void {
         var s = std::string::init_from_str(name);
         defer s.fini();
-        mu_begin_panel_ex(&self.*.mu_ctx, s.cstr(), opt);
+        mu_begin_panel_ex(&self.*.context, s.cstr(), opt);
     }
 
     func end_panel(self: *ui) void {
-        mu_end_panel(&self.*.mu_ctx);
+        mu_end_panel(&self.*.context);
     }
 
     func render(self: *ui) void {
-        smol::render(&self.*.mu_ctx);
+        smol::render(&self.*.context);
     }
 }

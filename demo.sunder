@@ -109,7 +109,7 @@ func main() void {
             ui.end_panel();
 
             # custom control
-            if incrementer(&ui.mu_ctx, &incremented) != 0 {
+            if incrementer(&ui.context, &incremented) != 0 {
                 std::print_line(std::out(), "custom incrementer interaction");
             }
 
