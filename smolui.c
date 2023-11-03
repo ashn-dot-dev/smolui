@@ -199,29 +199,15 @@ smol_render(mu_Context* ctx)
         }
         case MU_COMMAND_ICON: {
             Color icon_color = SMOL_COLOR_FROM_MU(cmd->icon.color);
-            char* icon = "?";
-            switch (cmd->icon.id) {
-            case MU_ICON_CLOSE: {
-                icon = "x";
-                break;
-            }
-            case MU_ICON_CHECK: {
-                icon = "*";
-                break;
-            }
-            case MU_ICON_COLLAPSED: {
-                icon = "+";
-                break;
-            }
-            case MU_ICON_EXPANDED: {
-                icon = "-";
-                break;
-            }
-            default:
-                assert(0 && "unreachable");
-            }
+            static char const* const icons[] = {
+                [MU_ICON_CLOSE] = "x",
+                [MU_ICON_CHECK] = "*",
+                [MU_ICON_COLLAPSED] = "+",
+                [MU_ICON_EXPANDED] = "-",
+            };
+            assert(MU_ICON_CLOSE <= cmd->icon.id && cmd->icon.id < MU_ICON_MAX);
             DrawText(
-                icon,
+                icons[cmd->icon.id],
                 cmd->icon.rect.x,
                 cmd->icon.rect.y,
                 cmd->icon.rect.h,
