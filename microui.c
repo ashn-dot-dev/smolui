@@ -470,6 +470,10 @@ mu_input_text(mu_Context *ctx, const char *text)
 mu_Command*
 mu_push_command(mu_Context *ctx, int type, int size)
 {
+    // Increase the size of the command allocation so that the next command
+    // push will be properly aligned to the alignment of an mu_Command.
+    while ((size % _Alignof(mu_Command)) != 0) { size += 1; }
+
     mu_Command *cmd = (mu_Command*) (ctx->command_list.items + ctx->command_list.idx);
     expect(ctx->command_list.idx + size < MU_COMMANDLIST_SIZE);
     cmd->base.type = type;
