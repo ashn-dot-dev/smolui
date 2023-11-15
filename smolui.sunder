@@ -38,8 +38,6 @@ let OPT_EXPANDED    = MU_OPT_EXPANDED;
 struct ui {
     var context: *mu_Context;
 
-    # Init a UI context with provided font.
-    # Providing a NULL font pointer wll use the default raylib font.
     func init(ctx: *mu_Context) ui {
         return (:ui){.context = ctx};
     }
