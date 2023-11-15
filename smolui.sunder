@@ -54,6 +54,10 @@ struct ui {
         mu_end(self.*.context);
     }
 
+    func layout_row(self: *ui, widths: []sint, height: sint) void {
+        mu_layout_row(self.*.context, (:sint)countof(widths), startof(widths), height);
+    }
+
     func text(self: *ui, text: []byte) void {
         var s = std::string::init_from_str(text);
         defer s.fini();

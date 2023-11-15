@@ -237,8 +237,7 @@ func style_window(ui: *smol::ui) void {
 
     if ui.*.begin_window("Style Editor", mu_rect(350, 250, 300, 240)) {
         var sw = (:sint)((:float)mu_get_current_container(ui.*.context).*.body.w * 0.14);
-        var widths = (:[]sint)[80, sw, sw, sw, sw, -1];
-        mu_layout_row(ui.*.context, (:sint)countof(widths), startof(widths), 0);
+        ui.*.layout_row((:[]sint)[80, sw, sw, sw, sw, -1], 0);
         for i in countof(colors) {
             ui.*.label(colors[i].label);
             u8_slider(ui, &ui.*.context.*.style.*.colors[i].r, 0, 255);
