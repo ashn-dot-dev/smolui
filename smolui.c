@@ -60,6 +60,8 @@ smol_setup_font(mu_Context* ctx, Font const* font)
 int
 smol_text_width(mu_Font font, char const* str, int len)
 {
+    // A negative len indicates an unknown string length.
+    if (len < 0) { len = strlen(str); };
     // TODO: There is no MeasureText function that takes a character slice, so
     // we are forced to allocate. See we can use a fixed buffer with a fallback
     // to strndup if len exceeds the size of the buffer.

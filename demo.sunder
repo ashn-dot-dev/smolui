@@ -6,6 +6,7 @@ import "raylib";
 import "microui.sunder";
 import "smolui.sunder";
 
+var incremented: sint = 0;
 func incrementer(ctx: *mu_Context, value: *sint) sint {
     var id = mu_get_id(ctx, &value, (:sint)sizeof(typeof(value)));
     var rect = mu_layout_next(ctx);
@@ -21,12 +22,240 @@ func incrementer(ctx: *mu_Context, value: *sint) sint {
     # draw
     var s = std::string::init();
     defer s.fini();
-    var writer = std::writer::init[[std::string]](&s);
-    std::print_format(writer, "{}", (:[]std::formatter)[std::formatter::init[[sint]](value)]);
+    var w = std::writer::init[[std::string]](&s);
+    std::print_format(w, "{}", (:[]std::formatter)[std::formatter::init[[sint]](value)]);
     mu_draw_control_frame(ctx, id, rect, MU_COLOR_BUTTON, 0);
     mu_draw_control_text(ctx, s.cstr(), rect, MU_COLOR_TEXT, MU_OPT_ALIGNCENTER);
 
     return res;
+}
+
+var bg = (:[3]float)[90.0, 95.0, 100.0];
+var checks = (:[3]sint)[1, 0, 1];
+func test_window(ctx: *mu_Context) void {
+    # do window
+    if mu_begin_window(ctx, startof("Demo Window"), mu_rect(40, 40, 300, 450)) != 0 {
+        var win = mu_get_current_container(ctx);
+        win.*.rect.w = sint::max(win.*.rect.w, 240);
+        win.*.rect.h = sint::max(win.*.rect.h, 300);
+
+        # window info
+        if mu_header(ctx, startof("Window Info")) != 0 {
+            var win = mu_get_current_container(ctx);
+            var widths = (:[]sint)[54, -1];
+            mu_layout_row(ctx, 2, startof(widths), 0);
+            mu_label(ctx, startof("Position:"));
+            var s = std::string::init();
+            defer s.fini();
+            var w = std::writer::init[[std::string]](&s);
+            std::print_format(w, "{} {}", (:[]std::formatter)[std::formatter::init[[sint]](&win.*.rect.x), std::formatter::init[[sint]](&win.*.rect.y)]);
+            mu_label(ctx, s.cstr());
+            mu_label(ctx, startof("Size:"));
+            var s = std::string::init();
+            defer s.fini();
+            var w = std::writer::init[[std::string]](&s);
+            std::print_format(w, "{} {}", (:[]std::formatter)[std::formatter::init[[sint]](&win.*.rect.w), std::formatter::init[[sint]](&win.*.rect.h)]);
+            mu_label(ctx, s.cstr());
+        }
+
+        # labels + buttons
+        if mu_header_ex(ctx, startof("Test Buttons"), MU_OPT_EXPANDED) != 0 {
+            var widths = (:[]sint)[86, -110, -1];
+            mu_layout_row(ctx, 3, startof(widths), 0);
+            mu_label(ctx, startof("Test buttons 1:"));
+            if mu_button(ctx, startof("Button 1")) != 0 { write_log("Pressed button 1"); }
+            if mu_button(ctx, startof("Button 2")) != 0 { write_log("Pressed button 2"); }
+            mu_label(ctx, startof("Test buttons 2:"));
+            if mu_button(ctx, startof("Button 3")) != 0 { write_log("Pressed button 3"); }
+            if mu_button(ctx, startof("Popup")) != 0 { mu_open_popup(ctx, startof("Test Popup")); }
+            if mu_begin_popup(ctx, startof("Test Popup")) != 0 {
+                mu_button(ctx, startof("Hello"));
+                mu_button(ctx, startof("World"));
+                mu_end_popup(ctx);
+            }
+        }
+
+        # tree
+        if mu_header_ex(ctx, startof("Tree and Text"), MU_OPT_EXPANDED) != 0 {
+            var widths = (:[]sint)[140, -1];
+            mu_layout_row(ctx, 2, startof(widths), 0);
+            mu_layout_begin_column(ctx);
+            if mu_begin_treenode(ctx, startof("Test 1")) != 0 {
+                if mu_begin_treenode(ctx, startof("Test 1a")) != 0 {
+                    mu_label(ctx, startof("Hello"));
+                    mu_label(ctx, startof("world"));
+                    mu_end_treenode(ctx);
+                }
+                if mu_begin_treenode(ctx, startof("Test 1b")) != 0 {
+                    if mu_button(ctx, startof("Button 1")) != 0 { write_log("Pressed button 1"); }
+                    if mu_button(ctx, startof("Button 2")) != 0 { write_log("Pressed button 2"); }
+                    mu_end_treenode(ctx);
+                }
+                mu_end_treenode(ctx);
+            }
+            if mu_begin_treenode(ctx, startof("Test 2")) != 0 {
+                var widths = (:[]sint)[54, 54];
+                mu_layout_row(ctx, 2, startof(widths), 0);
+                if mu_button(ctx, startof("Button 3")) != 0 { write_log("Pressed button 3"); }
+                if mu_button(ctx, startof("Button 4")) != 0 { write_log("Pressed button 4"); }
+                if mu_button(ctx, startof("Button 5")) != 0 { write_log("Pressed button 5"); }
+                if mu_button(ctx, startof("Button 6")) != 0 { write_log("Pressed button 6"); }
+                mu_end_treenode(ctx);
+            }
+            if mu_begin_treenode(ctx, startof("Test 3")) != 0 {
+                mu_checkbox(ctx, startof("Checkbox 1"), &checks[0]);
+                mu_checkbox(ctx, startof("Checkbox 2"), &checks[1]);
+                mu_checkbox(ctx, startof("Checkbox 3"), &checks[2]);
+                mu_end_treenode(ctx);
+            }
+            mu_layout_end_column(ctx);
+
+            mu_layout_begin_column(ctx);
+            var widths = (:[]sint)[-1];
+            mu_layout_row(ctx, 1, startof(widths), 0);
+            mu_text(ctx, startof("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas lacinia, sem eu lacinia molestie, mi risus faucibus ipsum, eu varius magna felis a nulla."));
+            mu_layout_end_column(ctx);
+        }
+
+        # background color sliders
+        if mu_header_ex(ctx, startof("Background Color"), MU_OPT_EXPANDED) != 0 {
+            var widths = (:[]sint)[-78, -1];
+            mu_layout_row(ctx, 2, startof(widths), 74);
+            # sliders
+            mu_layout_begin_column(ctx);
+            var widths = (:[]sint)[46, -1];
+            mu_layout_row(ctx, 2, startof(widths), 0);
+            mu_label(ctx, startof("Red:"));   mu_slider(ctx, &bg[0], 0.0, 255.0);
+            mu_label(ctx, startof("Green:")); mu_slider(ctx, &bg[1], 0.0, 255.0);
+            mu_label(ctx, startof("Blue:"));  mu_slider(ctx, &bg[2], 0.0, 255.0);
+            mu_layout_end_column(ctx);
+            # color preview
+            var r = mu_layout_next(ctx);
+            var bg = (:[3]sint)[(:sint)bg[0], (:sint)bg[1], (:sint)bg[2]];
+            mu_draw_rect(ctx, r, mu_color(bg[0], bg[1], bg[2], 255));
+            var s = std::string::init();
+            defer s.fini();
+            var w = std::writer::init[[std::string]](&s);
+            std::print_format(w, "{x} {x} {x}", (:[]std::formatter)[std::formatter::init[[sint]](&bg[0]), std::formatter::init[[sint]](&bg[1]), std::formatter::init[[sint]](&bg[2])]);
+            mu_draw_control_text(ctx, s.cstr(), r, MU_COLOR_TEXT, MU_OPT_ALIGNCENTER);
+        }
+
+        # custom control
+        if mu_header_ex(ctx, startof("Custom Incrementer"), MU_OPT_EXPANDED) != 0 {
+            if (incrementer(ctx, &incremented) != 0) {
+                write_log("custom incrementer interaction");
+            }
+        }
+
+        mu_end_window(ctx);
+    }
+}
+
+var logbuf: std::string = uninit;
+var logbuf_updated: sint = 0;
+var logbuf_initialized = false;
+func write_log(text: []byte) void
+{
+    if not logbuf_initialized {
+        # XXX: This leaks at program exit.
+        logbuf = std::string::init();
+        logbuf_initialized = true;
+    }
+
+    if logbuf.count() != 0 {
+        std::print(std::writer::init[[std::string]](&logbuf), "\n");
+    }
+    std::print(std::writer::init[[std::string]](&logbuf), text);
+    logbuf_updated = 1;
+}
+
+var buf = (:[128]char)[0...];
+func log_window(ctx: *mu_Context) void
+{
+    if mu_begin_window(ctx, startof("Log Window"), mu_rect(350, 40, 300, 200)) != 0 {
+        # output text panel
+        var widths = (:[]sint)[-1];
+        mu_layout_row(ctx, 1, startof(widths), -25);
+        mu_begin_panel(ctx, startof("Log Output"));
+        var panel = mu_get_current_container(ctx);
+        var widths = (:[]sint)[-1];
+        mu_layout_row(ctx, 1, startof(widths), -1);
+        mu_text(ctx, logbuf.cstr());
+        mu_end_panel(ctx);
+        if logbuf_updated != 0 {
+            panel.*.scroll.y = panel.*.content_size.y;
+            logbuf_updated = 0;
+        }
+
+        # input textbox + submit button
+        var submitted: sint = 0;
+        var widths = (:[]sint)[-70, -1];
+        mu_layout_row(ctx, 2, startof(widths), 0);
+        if (mu_textbox(ctx, &buf[0], (:sint)sizeof(typeof(buf))) & MU_RES_SUBMIT) != 0 {
+            mu_set_focus(ctx, ctx.*.last_id);
+            submitted = 1;
+        }
+        if mu_button(ctx, startof("Submit")) != 0 { submitted = 1; }
+        if submitted != 0 {
+            write_log((:[]byte){&buf[0], std::cstr::count(&buf[0])});
+            buf[0] = '\0';
+        }
+
+        mu_end_window(ctx);
+    }
+}
+
+var tmp: float = 0.0;
+func uint8_slider(ctx: *mu_Context, value: *u8, low: sint, high: sint) sint
+{
+    mu_push_id(ctx, &value, (:sint)sizeof(typeof(value)));
+    tmp = (:float)*value;
+    var res = mu_slider_ex(ctx, &tmp, (:f32)low, (:f32)high, 0.0, startof("%.0f"), MU_OPT_ALIGNCENTER);
+    *value = (:u8)tmp;
+    mu_pop_id(ctx);
+    return res;
+}
+
+struct color_mapping {
+    var label: *char;
+    var idx: sint;
+}
+
+var colors = (:[]color_mapping)[
+    (:color_mapping){ .label = startof("text:"),         .idx = MU_COLOR_TEXT        },
+    (:color_mapping){ .label = startof("border:"),       .idx = MU_COLOR_BORDER      },
+    (:color_mapping){ .label = startof("windowbg:"),     .idx = MU_COLOR_WINDOWBG    },
+    (:color_mapping){ .label = startof("titlebg:"),      .idx = MU_COLOR_TITLEBG     },
+    (:color_mapping){ .label = startof("titletext:"),    .idx = MU_COLOR_TITLETEXT   },
+    (:color_mapping){ .label = startof("panelbg:"),      .idx = MU_COLOR_PANELBG     },
+    (:color_mapping){ .label = startof("button:"),       .idx = MU_COLOR_BUTTON      },
+    (:color_mapping){ .label = startof("buttonhover:"),  .idx = MU_COLOR_BUTTONHOVER },
+    (:color_mapping){ .label = startof("buttonfocus:"),  .idx = MU_COLOR_BUTTONFOCUS },
+    (:color_mapping){ .label = startof("base:"),         .idx = MU_COLOR_BASE        },
+    (:color_mapping){ .label = startof("basehover:"),    .idx = MU_COLOR_BASEHOVER   },
+    (:color_mapping){ .label = startof("basefocus:"),    .idx = MU_COLOR_BASEFOCUS   },
+    (:color_mapping){ .label = startof("scrollbase:"),   .idx = MU_COLOR_SCROLLBASE  },
+    (:color_mapping){ .label = startof("scrollthumb:"),  .idx = MU_COLOR_SCROLLTHUMB },
+    (:color_mapping){ .label = std::ptr[[char]]::NULL,   .idx = 0 }
+];
+
+func style_window(ctx: *mu_Context) void {
+    if mu_begin_window(ctx, startof("Style Editor"), mu_rect(350, 250, 300, 240)) != 0 {
+        var sw = (:sint)((:float)mu_get_current_container(ctx).*.body.w * 0.14);
+        var widths = (:[]sint)[80, sw, sw, sw, sw, -1];
+        mu_layout_row(ctx, 6, startof(widths), 0);
+        var i = 0u;
+        for colors[i].label != std::ptr[[char]]::NULL {
+            defer { i = i + 1; }
+            mu_label(ctx, colors[i].label);
+            uint8_slider(ctx, &ctx.*.style.*.colors[i].r, 0, 255);
+            uint8_slider(ctx, &ctx.*.style.*.colors[i].g, 0, 255);
+            uint8_slider(ctx, &ctx.*.style.*.colors[i].b, 0, 255);
+            uint8_slider(ctx, &ctx.*.style.*.colors[i].a, 0, 255);
+            mu_draw_rect(ctx, mu_layout_next(ctx), ctx.*.style.*.colors[i]);
+        }
+        mu_end_window(ctx);
+    }
 }
 
 func main() void {
@@ -34,90 +263,24 @@ func main() void {
     defer CloseWindow();
     SetTargetFPS(60);
 
-    var ui = smol::ui::init(std::ptr[[Font]]::NULL);
-
-    var textbuf_a = std::string::init_from_str("textbox a");
-    var textbuf_b = std::string::init_from_str("textbox b");
-    defer textbuf_a.fini();
-    defer textbuf_b.fini();
-    var checked: bool = false;
-    var slider: float = 0.0;
-    var number: float = 0.0;
-    var incremented: sint = 0;
+    var ctx: mu_Context = uninit;
+    mu_init(&ctx);
+    smol::setup_font(&ctx, std::ptr[[Font]]::NULL);
+    var ui = smol::ui::init(&ctx);
 
     for not WindowShouldClose() {
         BeginDrawing();
         ClearBackground(BLACK);
 
-        ui.handle_input();
+        smol::handle_input(ui.context);
+        mu_begin(ui.context);
 
-        ui.begin();
-        if ui.begin_window_ex("window", (:smol::rect){.x = 20, .y = 20, .w = 800 - 2 * 20, .h = 600 - 2 * 20}, smol::OPT_NOCLOSE) {
-            ui.text("some text");
-            ui.label("label");
-            if ui.button("button"){
-                std::print_line(std::out(), "button pressed");
-            }
-            if ui.button_ex("button ex", smol::ICON_CHECK, smol::OPT_ALIGNCENTER){
-                std::print_line(std::out(), "button (ex) pressed");
-            }
-            if ui.checkbox("checkbox", &checked) {
-                std::print_line(std::out(), "checkbox interaction");
-            }
-            if ui.textbox(&textbuf_a) {
-                std::print_line(std::out(), "textbox interaction");
-            }
-            var textbox_ex_res = ui.textbox_ex(&textbuf_b, smol::OPT_ALIGNCENTER);
-            if textbox_ex_res != 0 {
-                std::print_line(std::out(), "textbox (ex) interaction");
-                if (textbox_ex_res & smol::RES_SUBMIT) != 0 {
-                    std::print_line(std::out(), "\ttextbox submit");
-                }
-                if (textbox_ex_res & smol::RES_CHANGE) != 0 {
-                    std::print_line(std::out(), "\ttextbox change");
-                }
-            }
-            if ui.slider(&slider, 0.0, 100.0) {
-                std::print_line(std::out(), "slider interaction");
-            }
-            if ui.number(&number, 5.0) {
-                std::print_line(std::out(), "number interaction");
-            }
-            if ui.header("header") {
-                ui.text("text under header");
-            }
-            if ui.header_ex("header ex", smol::OPT_EXPANDED) {
-                ui.text("text under header (ex)");
-            }
-            if ui.begin_treenode("treenode") {
-                ui.text("text under treenode");
-                ui.end_treenode();
-            }
-            if ui.begin_treenode_ex("treenode ex", smol::OPT_EXPANDED) {
-                ui.text("text under treenode (ex)");
-                ui.end_treenode();
-            }
-            if ui.button("open popup") {
-                ui.open_popup("popup");
-            }
-            if ui.begin_popup("popup") {
-                ui.text("text inside popup");
-                ui.end_popup();
-            }
-            ui.begin_panel("panel");
-            ui.text("text inside panel");
-            ui.end_panel();
+        log_window(ui.context);
+        test_window(ui.context);
+        style_window(ui.context);
 
-            # custom control
-            if incrementer(&ui.context, &incremented) != 0 {
-                std::print_line(std::out(), "custom incrementer interaction");
-            }
-
-            ui.end_window();
-        }
-        ui.end();
-
-        ui.render();
+        mu_end(ui.context);
+        smol::render(ui.context);
         EndDrawing();
     }
 }
