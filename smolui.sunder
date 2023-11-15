@@ -110,6 +110,10 @@ struct ui {
         return mu_slider(self.*.context, value, lo, hi) != 0;
     }
 
+    func slider_ex(self: *ui, value: *float, lo: float, hi: float, step: float, fmt: *char, opt: sint) bool {
+        return mu_slider_ex(self.*.context, value, lo, hi, step, fmt, opt) != 0;
+    }
+
     func number(self: *ui, value: *float, step: float) bool {
         return mu_number(self.*.context, value, step) != 0;
     }

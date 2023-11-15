@@ -206,48 +206,48 @@ func log_window(ctx: *mu_Context) void
 }
 
 var _u8_slider_tmp: float = 0.0;
-func u8_slider(ctx: *mu_Context, value: *u8, low: sint, high: sint) sint
+func u8_slider(ui: *smol::ui, value: *u8, low: sint, high: sint) bool
 {
-    mu_push_id(ctx, &value, (:sint)sizeof(typeof(value)));
+    mu_push_id(ui.*.context, &value, (:sint)sizeof(typeof(value)));
     _u8_slider_tmp = (:float)*value;
-    var res = mu_slider_ex(ctx, &_u8_slider_tmp, (:f32)low, (:f32)high, 0.0, startof("%.0f"), MU_OPT_ALIGNCENTER);
+    var res = ui.*.slider_ex(&_u8_slider_tmp, (:f32)low, (:f32)high, 0.0, startof("%.0f"), MU_OPT_ALIGNCENTER);
     *value = (:u8)_u8_slider_tmp;
-    mu_pop_id(ctx);
+    mu_pop_id(ui.*.context);
     return res;
 }
 
-func style_window(ctx: *mu_Context) void {
-    alias color_mapping = struct { var label: *char; var idx: sint; };
+func style_window(ui: *smol::ui) void {
+    alias color_mapping = struct { var label: []byte; var idx: sint; };
     let colors = (:[]color_mapping)[
-        (:color_mapping){.label = startof("text:"),         .idx = MU_COLOR_TEXT       },
-        (:color_mapping){.label = startof("border:"),       .idx = MU_COLOR_BORDER     },
-        (:color_mapping){.label = startof("windowbg:"),     .idx = MU_COLOR_WINDOWBG   },
-        (:color_mapping){.label = startof("titlebg:"),      .idx = MU_COLOR_TITLEBG    },
-        (:color_mapping){.label = startof("titletext:"),    .idx = MU_COLOR_TITLETEXT  },
-        (:color_mapping){.label = startof("panelbg:"),      .idx = MU_COLOR_PANELBG    },
-        (:color_mapping){.label = startof("button:"),       .idx = MU_COLOR_BUTTON     },
-        (:color_mapping){.label = startof("buttonhover:"),  .idx = MU_COLOR_BUTTONHOVER},
-        (:color_mapping){.label = startof("buttonfocus:"),  .idx = MU_COLOR_BUTTONFOCUS},
-        (:color_mapping){.label = startof("base:"),         .idx = MU_COLOR_BASE       },
-        (:color_mapping){.label = startof("basehover:"),    .idx = MU_COLOR_BASEHOVER  },
-        (:color_mapping){.label = startof("basefocus:"),    .idx = MU_COLOR_BASEFOCUS  },
-        (:color_mapping){.label = startof("scrollbase:"),   .idx = MU_COLOR_SCROLLBASE },
-        (:color_mapping){.label = startof("scrollthumb:"),  .idx = MU_COLOR_SCROLLTHUMB},
+        (:color_mapping){.label = "text:",         .idx = MU_COLOR_TEXT       },
+        (:color_mapping){.label = "border:",       .idx = MU_COLOR_BORDER     },
+        (:color_mapping){.label = "windowbg:",     .idx = MU_COLOR_WINDOWBG   },
+        (:color_mapping){.label = "titlebg:",      .idx = MU_COLOR_TITLEBG    },
+        (:color_mapping){.label = "titletext:",    .idx = MU_COLOR_TITLETEXT  },
+        (:color_mapping){.label = "panelbg:",      .idx = MU_COLOR_PANELBG    },
+        (:color_mapping){.label = "button:",       .idx = MU_COLOR_BUTTON     },
+        (:color_mapping){.label = "buttonhover:",  .idx = MU_COLOR_BUTTONHOVER},
+        (:color_mapping){.label = "buttonfocus:",  .idx = MU_COLOR_BUTTONFOCUS},
+        (:color_mapping){.label = "base:",         .idx = MU_COLOR_BASE       },
+        (:color_mapping){.label = "basehover:",    .idx = MU_COLOR_BASEHOVER  },
+        (:color_mapping){.label = "basefocus:",    .idx = MU_COLOR_BASEFOCUS  },
+        (:color_mapping){.label = "scrollbase:",   .idx = MU_COLOR_SCROLLBASE },
+        (:color_mapping){.label = "scrollthumb:",  .idx = MU_COLOR_SCROLLTHUMB},
     ];
 
-    if mu_begin_window(ctx, startof("Style Editor"), mu_rect(350, 250, 300, 240)) != 0 {
-        var sw = (:sint)((:float)mu_get_current_container(ctx).*.body.w * 0.14);
+    if ui.*.begin_window("Style Editor", mu_rect(350, 250, 300, 240)) {
+        var sw = (:sint)((:float)mu_get_current_container(ui.*.context).*.body.w * 0.14);
         var widths = (:[]sint)[80, sw, sw, sw, sw, -1];
-        mu_layout_row(ctx, (:sint)countof(widths), startof(widths), 0);
+        mu_layout_row(ui.*.context, (:sint)countof(widths), startof(widths), 0);
         for i in countof(colors) {
-            mu_label(ctx, colors[i].label);
-            u8_slider(ctx, &ctx.*.style.*.colors[i].r, 0, 255);
-            u8_slider(ctx, &ctx.*.style.*.colors[i].g, 0, 255);
-            u8_slider(ctx, &ctx.*.style.*.colors[i].b, 0, 255);
-            u8_slider(ctx, &ctx.*.style.*.colors[i].a, 0, 255);
-            mu_draw_rect(ctx, mu_layout_next(ctx), ctx.*.style.*.colors[i]);
+            ui.*.label(colors[i].label);
+            u8_slider(ui, &ui.*.context.*.style.*.colors[i].r, 0, 255);
+            u8_slider(ui, &ui.*.context.*.style.*.colors[i].g, 0, 255);
+            u8_slider(ui, &ui.*.context.*.style.*.colors[i].b, 0, 255);
+            u8_slider(ui, &ui.*.context.*.style.*.colors[i].a, 0, 255);
+            mu_draw_rect(ui.*.context, mu_layout_next(ui.*.context), ui.*.context.*.style.*.colors[i]);
         }
-        mu_end_window(ctx);
+        mu_end_window(ui.*.context);
     }
 }
 
@@ -270,7 +270,7 @@ func main() void {
 
         log_window(ui.context);
         test_window(ui.context);
-        style_window(ui.context);
+        style_window(&ui);
 
         mu_end(ui.context);
         smol::render(ui.context);
