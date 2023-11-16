@@ -10,7 +10,10 @@ extern func setup_font(ctx: *mu_Context, font: *Font) void;
 extern func handle_input(ctx: *mu_Context) void;
 extern func render(ctx: *mu_Context) void;
 
+alias font = mu_Font;
+alias vec2 = mu_Vec2;
 alias rect = mu_Rect;
+alias color = mu_Color;
 
 let RES_ACTIVE = MU_RES_ACTIVE;
 let RES_SUBMIT = MU_RES_SUBMIT;
@@ -52,6 +55,22 @@ struct ui {
 
     func end(self: *ui) void {
         mu_end(self.*.context);
+    }
+
+    func draw_rect(self: *ui, rect: smol::rect, color: smol::color) void {
+        mu_draw_rect(self.*.context, rect, color);
+    }
+
+    func draw_box(self: *ui, rect: smol::rect, color: smol::color) void {
+        mu_draw_box(self.*.context, rect, color);
+    }
+
+    func draw_text(self: *ui, font: smol::font, str: []byte, position: smol::vec2, color: smol::color) void {
+        mu_draw_text(self.*.context, font, startof(str), (:sint)countof(str), position, color);
+    }
+
+    func draw_icon(self: *ui, id: sint, rect: smol::rect, color: smol::color) void {
+        mu_draw_icon(self.*.context, id, rect, color);
     }
 
     func layout_row(self: *ui, widths: []sint, height: sint) void {

@@ -244,7 +244,7 @@ func style_window(ui: *smol::ui) void {
             u8_slider(ui, &ui.*.context.*.style.*.colors[i].g, 0, 255);
             u8_slider(ui, &ui.*.context.*.style.*.colors[i].b, 0, 255);
             u8_slider(ui, &ui.*.context.*.style.*.colors[i].a, 0, 255);
-            mu_draw_rect(ui.*.context, mu_layout_next(ui.*.context), ui.*.context.*.style.*.colors[i]);
+            ui.*.draw_rect(mu_layout_next(ui.*.context), ui.*.context.*.style.*.colors[i]);
         }
         mu_end_window(ui.*.context);
     }
