@@ -77,6 +77,30 @@ struct ui {
         mu_layout_row(self.*.context, (:sint)countof(widths), startof(widths), height);
     }
 
+    func layout_width(self: *ui, width: sint) void {
+        mu_layout_width(self.*.context, width);
+    }
+
+    func layout_height(self: *ui, height: sint) void {
+        mu_layout_height(self.*.context, height);
+    }
+
+    func layout_begin_column(self: *ui) void {
+        mu_layout_begin_column(self.*.context);
+    }
+
+    func layout_end_column(self: *ui) void {
+        mu_layout_end_column(self.*.context);
+    }
+
+    func layout_set_next(self: *ui, rect: smol::rect, relative: bool) void {
+        mu_layout_set_next(self.*.context, rect, (:sint)relative);
+    }
+
+    func layout_next(self: *ui) smol::rect {
+        return mu_layout_next(self.*.context);
+    }
+
     func text(self: *ui, text: []byte) void {
         var s = std::string::init_from_str(text);
         defer s.fini();
