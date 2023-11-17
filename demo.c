@@ -33,7 +33,7 @@
 static char log_buffer[64000];
 static bool log_buffer_updated = false;
 static void
-write_log(const char *text)
+write_log(char const* text)
 {
     if (log_buffer[0]) { strcat(log_buffer, "\n"); }
     strcat(log_buffer, text);
@@ -42,7 +42,7 @@ write_log(const char *text)
 
 static int incremented = 0;
 static int
-incrementer(mu_Context *ctx, int *value)
+incrementer(mu_Context* ctx, int* value)
 {
     mu_Id     id = mu_get_id(ctx, &value, sizeof(value));
     mu_Rect rect = mu_layout_next(ctx);
@@ -65,17 +65,17 @@ incrementer(mu_Context *ctx, int *value)
 }
 
 static void
-test_window(mu_Context *ctx)
+test_window(mu_Context* ctx)
 {
     /* do window */
     if (mu_begin_window(ctx, "Demo Window", mu_rect(40, 40, 300, 450))) {
-        mu_Container *win = mu_get_current_container(ctx);
+        mu_Container* win = mu_get_current_container(ctx);
         win->rect.w = mu_max(win->rect.w, 240);
         win->rect.h = mu_max(win->rect.h, 300);
 
         /* window info */
         if (mu_header(ctx, "Window Info")) {
-            mu_Container *win = mu_get_current_container(ctx);
+            mu_Container* win = mu_get_current_container(ctx);
             char buf[64];
             mu_layout_row(ctx, 2, (int[]) { 54, -1 }, 0);
             mu_label(ctx, "Position:");
@@ -174,13 +174,13 @@ test_window(mu_Context *ctx)
 }
 
 static void
-log_window(mu_Context *ctx)
+log_window(mu_Context* ctx)
 {
     if (mu_begin_window(ctx, "Log Window", mu_rect(350, 40, 300, 200))) {
         /* output text panel */
         mu_layout_row(ctx, 1, (int[]) { -1 }, -25);
         mu_begin_panel(ctx, "Log Output");
-        mu_Container *panel = mu_get_current_container(ctx);
+        mu_Container* panel = mu_get_current_container(ctx);
         mu_layout_row(ctx, 1, (int[]) { -1 }, -1);
         mu_text(ctx, log_buffer);
         mu_end_panel(ctx);
@@ -208,7 +208,7 @@ log_window(mu_Context *ctx)
 }
 
 static int
-uint8_slider(mu_Context *ctx, unsigned char *value, int low, int high)
+uint8_slider(mu_Context* ctx, unsigned char* value, int low, int high)
 {
     static float tmp;
     mu_push_id(ctx, &value, sizeof(value));
@@ -220,9 +220,9 @@ uint8_slider(mu_Context *ctx, unsigned char *value, int low, int high)
 }
 
 static void
-style_window(mu_Context *ctx)
+style_window(mu_Context* ctx)
 {
-    static struct { const char *label; int idx; } colors[] = {
+    static struct { char const* label; int idx; } colors[] = {
         { "text:",         MU_COLOR_TEXT        },
         { "border:",       MU_COLOR_BORDER      },
         { "windowbg:",     MU_COLOR_WINDOWBG    },
