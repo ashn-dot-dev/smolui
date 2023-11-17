@@ -128,7 +128,7 @@ test_window(mu_Context *ctx)
                 mu_end_treenode(ctx);
             }
             if (mu_begin_treenode(ctx, "Test 3")) {
-                static int checks[3] = { 1, 0, 1 };
+                static bool checks[3] = { true, false, true };
                 mu_checkbox(ctx, "Checkbox 1", &checks[0]);
                 mu_checkbox(ctx, "Checkbox 2", &checks[1]);
                 mu_checkbox(ctx, "Checkbox 3", &checks[2]);

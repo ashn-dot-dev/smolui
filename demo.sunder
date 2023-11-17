@@ -7,14 +7,14 @@ import "microui.sunder";
 import "smolui.sunder";
 
 var incremented: sint = 0;
-func incrementer(ctx: *mu_Context, value: *sint) sint {
-    var id = mu_get_id(ctx, &value, (:sint)sizeof(typeof(value)));
-    var rect = mu_layout_next(ctx);
-    mu_update_control(ctx, id, rect, 0);
+func incrementer(ui: *smol::ui, value: *sint) sint {
+    var id = ui.*.get_id(&value, sizeof(typeof(value)));
+    var rect = ui.*.layout_next();
+    ui.*.update_control(id, rect, 0);
 
     # handle input
     var res: sint = 0;
-    if ctx.*.mouse_pressed == MU_MOUSE_LEFT and ctx.*.focus == id {
+    if ui.*.context.*.mouse_pressed == MU_MOUSE_LEFT and ui.*.context.*.focus == id {
         *value = *value + 1;
         res = res | MU_RES_CHANGE;
     }
@@ -24,191 +24,176 @@ func incrementer(ctx: *mu_Context, value: *sint) sint {
     defer s.fini();
     var w = std::writer::init[[std::string]](&s);
     std::print_format(w, "{}", (:[]std::formatter)[std::formatter::init[[sint]](value)]);
-    mu_draw_control_frame(ctx, id, rect, MU_COLOR_BUTTON, 0);
-    mu_draw_control_text(ctx, s.cstr(), rect, MU_COLOR_TEXT, MU_OPT_ALIGNCENTER);
+    ui.*.draw_control_frame(id, rect, MU_COLOR_BUTTON, 0);
+    ui.*.draw_control_text(s.data(), rect, MU_COLOR_TEXT, MU_OPT_ALIGNCENTER);
 
     return res;
 }
 
 var bg = (:[3]float)[90.0, 95.0, 100.0];
-var checks = (:[3]sint)[1, 0, 1];
-func test_window(ctx: *mu_Context) void {
+var checks = (:[3]bool)[true, false, true];
+func test_window(ui: *smol::ui) void {
     # do window
-    if mu_begin_window(ctx, startof("Demo Window"), mu_rect(40, 40, 300, 450)) != 0 {
-        var win = mu_get_current_container(ctx);
+    if ui.*.begin_window("Demo Window", smol::rect::init(40, 40, 300, 450)) {
+        var win = ui.*.get_current_container();
         win.*.rect.w = sint::max(win.*.rect.w, 240);
         win.*.rect.h = sint::max(win.*.rect.h, 300);
 
         # window info
-        if mu_header(ctx, startof("Window Info")) != 0 {
-            var win = mu_get_current_container(ctx);
-            var widths = (:[]sint)[54, -1];
-            mu_layout_row(ctx, 2, startof(widths), 0);
-            mu_label(ctx, startof("Position:"));
+        if ui.*.header("Window Info") {
+            var win = ui.*.get_current_container();
+            ui.*.layout_row((:[]sint)[54, -1], 0);
+            ui.*.label("Position:");
             var s = std::string::init();
             defer s.fini();
             var w = std::writer::init[[std::string]](&s);
             std::print_format(w, "{} {}", (:[]std::formatter)[std::formatter::init[[sint]](&win.*.rect.x), std::formatter::init[[sint]](&win.*.rect.y)]);
-            mu_label(ctx, s.cstr());
-            mu_label(ctx, startof("Size:"));
+            ui.*.label(s.data());
+            ui.*.label("Size:");
             var s = std::string::init();
             defer s.fini();
             var w = std::writer::init[[std::string]](&s);
             std::print_format(w, "{} {}", (:[]std::formatter)[std::formatter::init[[sint]](&win.*.rect.w), std::formatter::init[[sint]](&win.*.rect.h)]);
-            mu_label(ctx, s.cstr());
+            ui.*.label(s.data());
         }
 
         # labels + buttons
-        if mu_header_ex(ctx, startof("Test Buttons"), MU_OPT_EXPANDED) != 0 {
-            var widths = (:[]sint)[86, -110, -1];
-            mu_layout_row(ctx, 3, startof(widths), 0);
-            mu_label(ctx, startof("Test buttons 1:"));
-            if mu_button(ctx, startof("Button 1")) != 0 { write_log("Pressed button 1"); }
-            if mu_button(ctx, startof("Button 2")) != 0 { write_log("Pressed button 2"); }
-            mu_label(ctx, startof("Test buttons 2:"));
-            if mu_button(ctx, startof("Button 3")) != 0 { write_log("Pressed button 3"); }
-            if mu_button(ctx, startof("Popup")) != 0 { mu_open_popup(ctx, startof("Test Popup")); }
-            if mu_begin_popup(ctx, startof("Test Popup")) != 0 {
-                mu_button(ctx, startof("Hello"));
-                mu_button(ctx, startof("World"));
-                mu_end_popup(ctx);
+        if ui.*.header_ex("Test Buttons", MU_OPT_EXPANDED) {
+            ui.*.layout_row((:[]sint)[86, -110, -1], 0);
+            ui.*.label("Test buttons 1:");
+            if ui.*.button("Button 1") { write_log("Pressed button 1"); }
+            if ui.*.button("Button 2") { write_log("Pressed button 2"); }
+            ui.*.label("Test buttons 2:");
+            if ui.*.button("Button 3") { write_log("Pressed button 3"); }
+            if ui.*.button("Popup") { ui.*.open_popup("Test Popup"); }
+            if ui.*.begin_popup("Test Popup") {
+                ui.*.button("Hello");
+                ui.*.button("World");
+                ui.*.end_popup();
             }
         }
 
         # tree
-        if mu_header_ex(ctx, startof("Tree and Text"), MU_OPT_EXPANDED) != 0 {
-            var widths = (:[]sint)[140, -1];
-            mu_layout_row(ctx, 2, startof(widths), 0);
-            mu_layout_begin_column(ctx);
-            if mu_begin_treenode(ctx, startof("Test 1")) != 0 {
-                if mu_begin_treenode(ctx, startof("Test 1a")) != 0 {
-                    mu_label(ctx, startof("Hello"));
-                    mu_label(ctx, startof("world"));
-                    mu_end_treenode(ctx);
+        if ui.*.header_ex("Tree and Text", MU_OPT_EXPANDED) {
+            ui.*.layout_row((:[]sint)[140, -1], 0);
+            ui.*.layout_begin_column();
+            if ui.*.begin_treenode("Test 1") {
+                if ui.*.begin_treenode("Test 1a") {
+                    ui.*.label("Hello");
+                    ui.*.label("world");
+                    ui.*.end_treenode();
                 }
-                if mu_begin_treenode(ctx, startof("Test 1b")) != 0 {
-                    if mu_button(ctx, startof("Button 1")) != 0 { write_log("Pressed button 1"); }
-                    if mu_button(ctx, startof("Button 2")) != 0 { write_log("Pressed button 2"); }
-                    mu_end_treenode(ctx);
+                if ui.*.begin_treenode("Test 1b") {
+                    if ui.*.button("Button 1") { write_log("Pressed button 1"); }
+                    if ui.*.button("Button 2") { write_log("Pressed button 2"); }
+                    ui.*.end_treenode();
                 }
-                mu_end_treenode(ctx);
+                ui.*.end_treenode();
             }
-            if mu_begin_treenode(ctx, startof("Test 2")) != 0 {
-                var widths = (:[]sint)[54, 54];
-                mu_layout_row(ctx, 2, startof(widths), 0);
-                if mu_button(ctx, startof("Button 3")) != 0 { write_log("Pressed button 3"); }
-                if mu_button(ctx, startof("Button 4")) != 0 { write_log("Pressed button 4"); }
-                if mu_button(ctx, startof("Button 5")) != 0 { write_log("Pressed button 5"); }
-                if mu_button(ctx, startof("Button 6")) != 0 { write_log("Pressed button 6"); }
-                mu_end_treenode(ctx);
+            if ui.*.begin_treenode("Test 2") {
+                ui.*.layout_row((:[]sint)[54, 54], 0);
+                if ui.*.button("Button 3") { write_log("Pressed button 3"); }
+                if ui.*.button("Button 4") { write_log("Pressed button 4"); }
+                if ui.*.button("Button 5") { write_log("Pressed button 5"); }
+                if ui.*.button("Button 6") { write_log("Pressed button 6"); }
+                ui.*.end_treenode();
             }
-            if mu_begin_treenode(ctx, startof("Test 3")) != 0 {
-                mu_checkbox(ctx, startof("Checkbox 1"), &checks[0]);
-                mu_checkbox(ctx, startof("Checkbox 2"), &checks[1]);
-                mu_checkbox(ctx, startof("Checkbox 3"), &checks[2]);
-                mu_end_treenode(ctx);
+            if ui.*.begin_treenode("Test 3") {
+                ui.*.checkbox("Checkbox 1", &checks[0]);
+                ui.*.checkbox("Checkbox 2", &checks[1]);
+                ui.*.checkbox("Checkbox 3", &checks[2]);
+                ui.*.end_treenode();
             }
-            mu_layout_end_column(ctx);
+            ui.*.layout_end_column();
 
-            mu_layout_begin_column(ctx);
-            var widths = (:[]sint)[-1];
-            mu_layout_row(ctx, 1, startof(widths), 0);
-            mu_text(ctx, startof("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas lacinia, sem eu lacinia molestie, mi risus faucibus ipsum, eu varius magna felis a nulla."));
-            mu_layout_end_column(ctx);
+            ui.*.layout_begin_column();
+            ui.*.layout_row((:[]sint)[-1], 0);
+            ui.*.text("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas lacinia, sem eu lacinia molestie, mi risus faucibus ipsum, eu varius magna felis a nulla.");
+            ui.*.layout_end_column();
         }
 
         # background color sliders
-        if mu_header_ex(ctx, startof("Background Color"), MU_OPT_EXPANDED) != 0 {
-            var widths = (:[]sint)[-78, -1];
-            mu_layout_row(ctx, 2, startof(widths), 74);
+        if ui.*.header_ex("Background Color", MU_OPT_EXPANDED) {
+            ui.*.layout_row((:[]sint)[-78, -1], 74);
             # sliders
-            mu_layout_begin_column(ctx);
-            var widths = (:[]sint)[46, -1];
-            mu_layout_row(ctx, 2, startof(widths), 0);
-            mu_label(ctx, startof("Red:"));   mu_slider(ctx, &bg[0], 0.0, 255.0);
-            mu_label(ctx, startof("Green:")); mu_slider(ctx, &bg[1], 0.0, 255.0);
-            mu_label(ctx, startof("Blue:"));  mu_slider(ctx, &bg[2], 0.0, 255.0);
-            mu_layout_end_column(ctx);
+            ui.*.layout_begin_column();
+            ui.*.layout_row((:[]sint)[46, -1], 0);
+            ui.*.label("Red:");   ui.*.slider(&bg[0], 0.0, 255.0);
+            ui.*.label("Green:"); ui.*.slider(&bg[1], 0.0, 255.0);
+            ui.*.label("Blue:");  ui.*.slider(&bg[2], 0.0, 255.0);
+            ui.*.layout_end_column();
             # color preview
-            var r = mu_layout_next(ctx);
+            var rect = ui.*.layout_next();
             var bg = (:[3]sint)[(:sint)bg[0], (:sint)bg[1], (:sint)bg[2]];
-            mu_draw_rect(ctx, r, mu_color(bg[0], bg[1], bg[2], 255));
+            ui.*.draw_rect(rect, smol::color::init(bg[0], bg[1], bg[2], 255));
             var s = std::string::init();
             defer s.fini();
             var w = std::writer::init[[std::string]](&s);
             std::print_format(w, "{x} {x} {x}", (:[]std::formatter)[std::formatter::init[[sint]](&bg[0]), std::formatter::init[[sint]](&bg[1]), std::formatter::init[[sint]](&bg[2])]);
-            mu_draw_control_text(ctx, s.cstr(), r, MU_COLOR_TEXT, MU_OPT_ALIGNCENTER);
+            ui.*.draw_control_text(s.data(), rect, MU_COLOR_TEXT, MU_OPT_ALIGNCENTER);
         }
 
         # custom control
-        if mu_header_ex(ctx, startof("Custom Incrementer"), MU_OPT_EXPANDED) != 0 {
-            if (incrementer(ctx, &incremented) != 0) {
+        if ui.*.header_ex("Custom Incrementer", MU_OPT_EXPANDED) {
+            if incrementer(ui, &incremented) != 0 {
                 write_log("custom incrementer interaction");
             }
         }
 
-        mu_end_window(ctx);
+        ui.*.end_window();
     }
 }
 
-var logbuf: std::string = uninit;
-var logbuf_updated: sint = 0;
-var logbuf_initialized = false;
+var log_buffer: std::string = uninit;
+var log_buffer_updated = false;
 func write_log(text: []byte) void
 {
-    if not logbuf_initialized {
-        # XXX: This leaks at program exit.
-        logbuf = std::string::init();
-        logbuf_initialized = true;
+    if log_buffer.count() != 0 {
+        std::print(std::writer::init[[std::string]](&log_buffer), "\n");
     }
-
-    if logbuf.count() != 0 {
-        std::print(std::writer::init[[std::string]](&logbuf), "\n");
-    }
-    std::print(std::writer::init[[std::string]](&logbuf), text);
-    logbuf_updated = 1;
+    std::print(std::writer::init[[std::string]](&log_buffer), text);
+    log_buffer_updated = true;
 }
 
-var buf = (:[128]char)[0...];
-func log_window(ctx: *mu_Context) void
+var textbox_buffer = (:[128]char)[0...];
+func log_window(ui: *smol::ui) void
 {
-    if mu_begin_window(ctx, startof("Log Window"), mu_rect(350, 40, 300, 200)) != 0 {
+    if ui.*.begin_window("Log Window", smol::rect::init(350, 40, 300, 200)) {
         # output text panel
-        var widths = (:[]sint)[-1];
-        mu_layout_row(ctx, 1, startof(widths), -25);
-        mu_begin_panel(ctx, startof("Log Output"));
-        var panel = mu_get_current_container(ctx);
-        var widths = (:[]sint)[-1];
-        mu_layout_row(ctx, 1, startof(widths), -1);
-        mu_text(ctx, logbuf.cstr());
-        mu_end_panel(ctx);
-        if logbuf_updated != 0 {
+        ui.*.layout_row((:[]sint)[-1], -25);
+        ui.*.begin_panel("Log Output");
+        var panel = ui.*.get_current_container();
+        ui.*.layout_row((:[]sint)[-1], -1);
+        ui.*.text(log_buffer.data());
+        ui.*.end_panel();
+        if log_buffer_updated {
             panel.*.scroll.y = panel.*.content_size.y;
-            logbuf_updated = 0;
+            log_buffer_updated = false;
         }
 
         # input textbox + submit button
-        var submitted: sint = 0;
-        var widths = (:[]sint)[-70, -1];
-        mu_layout_row(ctx, 2, startof(widths), 0);
-        if (mu_textbox(ctx, &buf[0], (:sint)sizeof(typeof(buf))) & MU_RES_SUBMIT) != 0 {
-            mu_set_focus(ctx, ctx.*.last_id);
-            submitted = 1;
+        var submitted = false;
+        ui.*.layout_row((:[]sint)[-70, -1], 0);
+        if (ui.*.textbox_buffer(textbox_buffer[0:countof(textbox_buffer)]) & smol::RES_SUBMIT) != 0 {
+            ui.*.set_focus(ui.*.context.*.last_id);
+            submitted = true;
         }
-        if mu_button(ctx, startof("Submit")) != 0 { submitted = 1; }
-        if submitted != 0 {
-            write_log((:[]byte){&buf[0], std::cstr::count(&buf[0])});
-            buf[0] = '\0';
+        if ui.*.button("Submit") {
+            submitted = true;
+        }
+        if submitted {
+            write_log((:[]byte){&textbox_buffer[0], std::cstr::count(&textbox_buffer[0])});
+            textbox_buffer[0] = '\0';
         }
 
-        mu_end_window(ctx);
+        ui.*.end_window();
     }
 }
 
 var _u8_slider_tmp: float = 0.0;
 func u8_slider(ui: *smol::ui, value: *u8, low: sint, high: sint) bool
 {
-    ui.*.push_id(&value, (:sint)sizeof(typeof(value)));
+    ui.*.push_id(&value, sizeof(typeof(value)));
     _u8_slider_tmp = (:float)*value;
     var res = ui.*.slider_ex(&_u8_slider_tmp, (:f32)low, (:f32)high, 0.0, startof("%.0f"), MU_OPT_ALIGNCENTER);
     *value = (:u8)_u8_slider_tmp;
@@ -251,6 +236,7 @@ func style_window(ui: *smol::ui) void {
 }
 
 func main() void {
+    SetTraceLogLevel(LOG_WARNING);
     InitWindow(800, 600, startof("demo"));
     defer CloseWindow();
     SetTargetFPS(60);
@@ -260,6 +246,9 @@ func main() void {
     smol::setup_font(&ctx, std::ptr[[Font]]::NULL);
     var ui = smol::ui::init(&ctx);
 
+    log_buffer = std::string::init();
+    defer log_buffer.fini();
+
     for not WindowShouldClose() {
         BeginDrawing();
         ClearBackground(BLACK);
@@ -267,8 +256,8 @@ func main() void {
         smol::handle_input(ui.context);
         mu_begin(ui.context);
 
-        log_window(ui.context);
-        test_window(ui.context);
+        log_window(&ui);
+        test_window(&ui);
         style_window(&ui);
 
         mu_end(ui.context);

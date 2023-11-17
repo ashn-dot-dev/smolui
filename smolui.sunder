@@ -10,10 +10,17 @@ extern func setup_font(ctx: *mu_Context, font: *Font) void;
 extern func handle_input(ctx: *mu_Context) void;
 extern func render(ctx: *mu_Context) void;
 
+alias id = mu_Id;
 alias font = mu_Font;
 alias vec2 = mu_Vec2;
 alias rect = mu_Rect;
 alias color = mu_Color;
+
+alias command = mu_Command;
+alias layout = mu_Layout;
+alias container = mu_Container;
+alias style = mu_Style;
+alias context = mu_Context;
 
 let RES_ACTIVE = MU_RES_ACTIVE;
 let RES_SUBMIT = MU_RES_SUBMIT;
@@ -55,6 +62,52 @@ struct ui {
 
     func end(self: *ui) void {
         mu_end(self.*.context);
+    }
+
+    func set_focus(self: *ui, id: smol::id) void {
+        mu_set_focus(self.*.context, id);
+    }
+
+    func get_id(self: *ui, data: *any, size: usize) smol::id {
+        return mu_get_id(self.*.context, data, (:sint)size);
+    }
+
+    func push_id(self: *ui, data: *any, size: usize) void {
+        mu_push_id(self.*.context, data, (:sint)size);
+    }
+
+    func pop_id(self: *ui) void {
+        mu_pop_id(self.*.context);
+    }
+
+    func push_clip_rect(self: *ui, rect: smol::rect) void {
+        mu_push_clip_rect(self.*.context, rect);
+    }
+
+    func pop_clip_rect(self: *ui) void {
+        mu_pop_clip_rect(self.*.context);
+    }
+
+    func get_clip_rect(self: *ui) smol::rect {
+        return mu_get_clip_rect(self.*.context);
+    }
+
+    func check_clip(self: *ui, rect: smol::rect) sint {
+        return mu_check_clip(self.*.context, rect);
+    }
+
+    func get_current_container(self: *ui) *smol::container {
+        return mu_get_current_container(self.*.context);
+    }
+
+    func get_container(self: *ui, name: []byte) *smol::container {
+        var s = std::string::init_from_str(name);
+        defer s.fini();
+        return mu_get_container(self.*.context, s.cstr());
+    }
+
+    func bring_to_front(self: *ui, container: *smol::container) void {
+        mu_bring_to_front(self.*.context, container);
     }
 
     func draw_rect(self: *ui, rect: smol::rect, color: smol::color) void {
@@ -101,6 +154,24 @@ struct ui {
         return mu_layout_next(self.*.context);
     }
 
+    func draw_control_frame(self: *ui, id: smol::id, rect: smol::rect, colorid: sint, opt: sint) void {
+        mu_draw_control_frame(self.*.context, id, rect, colorid, opt);
+    }
+
+    func draw_control_text(self: *ui, text: []char, rect: smol::rect, colorid: sint, opt: sint) void {
+        var s = std::string::init_from_str(text);
+        defer s.fini();
+        mu_draw_control_text(self.*.context, s.cstr(), rect, colorid, opt);
+    }
+
+    func mouse_over(self: *ui, rect: smol::rect) sint {
+        return mu_mouse_over(self.*.context, rect);
+    }
+
+    func update_control(self: *ui, id: smol::id, rect: smol::rect, opt: sint) void {
+        mu_update_control(self.*.context, id, rect, opt);
+    }
+
     func text(self: *ui, text: []byte) void {
         var s = std::string::init_from_str(text);
         defer s.fini();
@@ -128,27 +199,33 @@ struct ui {
     func checkbox(self: *ui, text: []byte, state: *bool) bool {
         var s = std::string::init_from_str(text);
         defer s.fini();
-        var int = (:sint)*state;
-        var res = mu_checkbox(self.*.context, s.cstr(), &int) != 0;
-        *state = (:bool)int;
+        var res = mu_checkbox(self.*.context, s.cstr(), state) != 0;
         return res;
     }
 
-    func textbox(self: *ui, text: *std::string) bool {
-        return self.*.textbox_ex(text, 0) != 0;
+    func textbox_string(self: *ui, string: *std::string) sint {
+        return self.*.textbox_string_ex(string, 0);
     }
 
-    func textbox_ex(self: *ui, text: *std::string, opt: sint) sint {
+    func textbox_string_ex(self: *ui, string: *std::string, opt: sint) sint {
         # The address of the buffer may change during resize, so we use the
         # address of the std::string as the ID rather than the hashed value of
         # the buffer address that mu_textbox_ex would normally use.
-        var id = (:mu_Id)(:usize)text;
-        var r = mu_layout_next(self.*.context);
+        var id = (:mu_Id)(:usize)string;
+        var rect = mu_layout_next(self.*.context);
         let INPUT_TEXT_SIZE = 32u;
-        text.*.reserve(text.*.count() + INPUT_TEXT_SIZE);
-        var res = mu_textbox_raw(self.*.context, text.*.start(), (:sint)(text.*.capacity() + countof("\0")), id, r, opt);
-        text.*.resize(std::cstr::count(text.*.cstr()));
+        string.*.reserve(string.*.count() + INPUT_TEXT_SIZE);
+        var res = mu_textbox_raw(self.*.context, string.*.start(), (:sint)(string.*.capacity() + countof("\0")), id, rect, opt);
+        string.*.resize(std::cstr::count(string.*.cstr()));
         return res;
+    }
+
+    func textbox_buffer(self: *ui, buffer: []byte) sint {
+        return self.*.textbox_buffer_ex(buffer, 0);
+    }
+
+    func textbox_buffer_ex(self: *ui, buffer: []byte, opt: sint) sint {
+        return mu_textbox_ex(self.*.context, startof(buffer), (:sint)countof(buffer), opt);
     }
 
     func slider(self: *ui, value: *float, lo: float, hi: float) bool {
@@ -242,4 +319,16 @@ struct ui {
     func render(self: *ui) void {
         smol::render(self.*.context);
     }
+}
+
+extend smol::vec2 func init(x: sint, y: sint) smol::vec2 {
+    return mu_vec2(x, y);
+}
+
+extend smol::rect func init(x: sint, y: sint, w: sint, h: sint) smol::rect {
+    return mu_rect(x, y, w, h);
+}
+
+extend smol::color func init(r: sint, g: sint, b: sint, a: sint) smol::color {
+    return mu_color(r, g, b, a);
 }

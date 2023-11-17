@@ -244,9 +244,9 @@ func mu_begin_panel(ctx: *mu_Context, name: *char) void { mu_begin_panel_ex(ctx,
 extern func mu_text(ctx: *mu_Context, text: *char) void;
 extern func mu_label(ctx: *mu_Context, text: *char) void;
 extern func mu_button_ex(ctx: *mu_Context, label: *char, icon: sint, opt: sint) sint;
-extern func mu_checkbox(ctx: *mu_Context, label: *char, state: *sint) sint;
-extern func mu_textbox_raw(ctx: *mu_Context, buf: *char, bufsz: sint, id: mu_Id, r: mu_Rect, opt: sint) sint;
+extern func mu_checkbox(ctx: *mu_Context, label: *char, state: *bool) sint;
 extern func mu_textbox_ex(ctx: *mu_Context, buf: *char, bufsz: sint, opt: sint) sint;
+extern func mu_textbox_raw(ctx: *mu_Context, buf: *char, bufsz: sint, id: mu_Id, r: mu_Rect, opt: sint) sint;
 extern func mu_slider_ex(ctx: *mu_Context, value: *mu_Real, low: mu_Real, high: mu_Real, step: mu_Real, fmt: *char, opt: sint) sint;
 extern func mu_number_ex(ctx: *mu_Context, value: *mu_Real, step: mu_Real, fmt: *char, opt: sint) sint;
 extern func mu_begin_treenode_ex(ctx: *mu_Context, label: *char, opt: sint) sint;

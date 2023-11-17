@@ -810,7 +810,7 @@ mu_button_ex(mu_Context *ctx, const char *label, int icon, int opt)
 }
 
 int
-mu_checkbox(mu_Context *ctx, const char *label, int *state)
+mu_checkbox(mu_Context *ctx, const char *label, bool *state)
 {
     int res = 0;
     mu_Id id = mu_get_id(ctx, &state, sizeof(state));
@@ -830,6 +830,14 @@ mu_checkbox(mu_Context *ctx, const char *label, int *state)
     r = mu_rect(r.x + box.w, r.y, r.w - box.w, r.h);
     mu_draw_control_text(ctx, label, r, MU_COLOR_TEXT, 0);
     return res;
+}
+
+int
+mu_textbox_ex(mu_Context *ctx, char *buf, int bufsz, int opt)
+{
+    mu_Id id = mu_get_id(ctx, &buf, sizeof(buf));
+    mu_Rect r = mu_layout_next(ctx);
+    return mu_textbox_raw(ctx, buf, bufsz, id, r, opt);
 }
 
 int
@@ -902,14 +910,6 @@ number_textbox(mu_Context *ctx, mu_Real *value, mu_Rect r, mu_Id id)
         }
     }
     return 0;
-}
-
-int
-mu_textbox_ex(mu_Context *ctx, char *buf, int bufsz, int opt)
-{
-    mu_Id id = mu_get_id(ctx, &buf, sizeof(buf));
-    mu_Rect r = mu_layout_next(ctx);
-    return mu_textbox_raw(ctx, buf, bufsz, id, r, opt);
 }
 
 int
