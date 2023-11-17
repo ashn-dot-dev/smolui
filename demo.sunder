@@ -6,6 +6,17 @@ import "raylib";
 import "microui.sunder";
 import "smolui.sunder";
 
+var log_buffer: std::string = uninit;
+var log_buffer_updated = false;
+func write_log(text: []byte) void
+{
+    if log_buffer.count() != 0 {
+        std::print(std::writer::init[[std::string]](&log_buffer), "\n");
+    }
+    std::print(std::writer::init[[std::string]](&log_buffer), text);
+    log_buffer_updated = true;
+}
+
 var incremented: sint = 0;
 func incrementer(ui: *smol::ui, value: *sint) sint {
     var id = ui.*.get_id(&value, sizeof(typeof(value)));
@@ -30,7 +41,7 @@ func incrementer(ui: *smol::ui, value: *sint) sint {
     return res;
 }
 
-var bg = (:[3]float)[90.0, 95.0, 100.0];
+var bcolor = (:[3]float)[90.0, 95.0, 100.0];
 var checks = (:[3]bool)[true, false, true];
 func test_window(ui: *smol::ui) void {
     # do window
@@ -118,18 +129,28 @@ func test_window(ui: *smol::ui) void {
             # sliders
             ui.*.layout_begin_column();
             ui.*.layout_row((:[]sint)[46, -1], 0);
-            ui.*.label("Red:");   ui.*.slider(&bg[0], 0.0, 255.0);
-            ui.*.label("Green:"); ui.*.slider(&bg[1], 0.0, 255.0);
-            ui.*.label("Blue:");  ui.*.slider(&bg[2], 0.0, 255.0);
+            ui.*.label("Red:");   ui.*.slider(&bcolor[0], 0.0, 255.0);
+            ui.*.label("Green:"); ui.*.slider(&bcolor[1], 0.0, 255.0);
+            ui.*.label("Blue:");  ui.*.slider(&bcolor[2], 0.0, 255.0);
             ui.*.layout_end_column();
             # color preview
             var rect = ui.*.layout_next();
-            var bg = (:[3]sint)[(:sint)bg[0], (:sint)bg[1], (:sint)bg[2]];
-            ui.*.draw_rect(rect, smol::color::init(bg[0], bg[1], bg[2], 255));
+            var bcolor = (:[3]sint)[
+                (:sint)bcolor[0],
+                (:sint)bcolor[1],
+                (:sint)bcolor[2]
+            ];
+            ui.*.draw_rect(rect, smol::color::init(bcolor[0], bcolor[1], bcolor[2], 255));
             var s = std::string::init();
             defer s.fini();
             var w = std::writer::init[[std::string]](&s);
-            std::print_format(w, "{x} {x} {x}", (:[]std::formatter)[std::formatter::init[[sint]](&bg[0]), std::formatter::init[[sint]](&bg[1]), std::formatter::init[[sint]](&bg[2])]);
+            std::print_format(
+                w,
+                "{x} {x} {x}",
+                (:[]std::formatter)[
+                    std::formatter::init[[sint]](&bcolor[0]),
+                    std::formatter::init[[sint]](&bcolor[1]),
+                    std::formatter::init[[sint]](&bcolor[2])]);
             ui.*.draw_control_text(s.data(), rect, MU_COLOR_TEXT, MU_OPT_ALIGNCENTER);
         }
 
@@ -142,17 +163,6 @@ func test_window(ui: *smol::ui) void {
 
         ui.*.end_window();
     }
-}
-
-var log_buffer: std::string = uninit;
-var log_buffer_updated = false;
-func write_log(text: []byte) void
-{
-    if log_buffer.count() != 0 {
-        std::print(std::writer::init[[std::string]](&log_buffer), "\n");
-    }
-    std::print(std::writer::init[[std::string]](&log_buffer), text);
-    log_buffer_updated = true;
 }
 
 var textbox_buffer = (:[128]char)[0...];

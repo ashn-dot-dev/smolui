@@ -30,19 +30,17 @@
 #include <raylib.h>
 #include <smolui.h>
 
-static  char logbuf[64000];
-static   int logbuf_updated = 0;
-static float bg[3] = { 90, 95, 100 };
-static   int incremented = 0;
-
+static char log_buffer[64000];
+static bool log_buffer_updated = false;
 static void
 write_log(const char *text)
 {
-    if (logbuf[0]) { strcat(logbuf, "\n"); }
-    strcat(logbuf, text);
-    logbuf_updated = 1;
+    if (log_buffer[0]) { strcat(log_buffer, "\n"); }
+    strcat(log_buffer, text);
+    log_buffer_updated = true;
 }
 
+static int incremented = 0;
 static int
 incrementer(mu_Context *ctx, int *value)
 {
@@ -146,20 +144,21 @@ test_window(mu_Context *ctx)
         }
 
         /* background color sliders */
+        static float bcolor[3] = { 90, 95, 100 };
         if (mu_header_ex(ctx, "Background Color", MU_OPT_EXPANDED)) {
             mu_layout_row(ctx, 2, (int[]) { -78, -1 }, 74);
             /* sliders */
             mu_layout_begin_column(ctx);
             mu_layout_row(ctx, 2, (int[]) { 46, -1 }, 0);
-            mu_label(ctx, "Red:");   mu_slider(ctx, &bg[0], 0, 255);
-            mu_label(ctx, "Green:"); mu_slider(ctx, &bg[1], 0, 255);
-            mu_label(ctx, "Blue:");  mu_slider(ctx, &bg[2], 0, 255);
+            mu_label(ctx, "Red:");   mu_slider(ctx, &bcolor[0], 0, 255);
+            mu_label(ctx, "Green:"); mu_slider(ctx, &bcolor[1], 0, 255);
+            mu_label(ctx, "Blue:");  mu_slider(ctx, &bcolor[2], 0, 255);
             mu_layout_end_column(ctx);
             /* color preview */
             mu_Rect r = mu_layout_next(ctx);
-            mu_draw_rect(ctx, r, mu_color(bg[0], bg[1], bg[2], 255));
+            mu_draw_rect(ctx, r, mu_color(bcolor[0], bcolor[1], bcolor[2], 255));
             char buf[32];
-            sprintf(buf, "#%02X%02X%02X", (int) bg[0], (int) bg[1], (int) bg[2]);
+            sprintf(buf, "#%02X%02X%02X", (int)bcolor[0], (int)bcolor[1], (int)bcolor[2]);
             mu_draw_control_text(ctx, buf, r, MU_COLOR_TEXT, MU_OPT_ALIGNCENTER);
         }
 
@@ -183,11 +182,11 @@ log_window(mu_Context *ctx)
         mu_begin_panel(ctx, "Log Output");
         mu_Container *panel = mu_get_current_container(ctx);
         mu_layout_row(ctx, 1, (int[]) { -1 }, -1);
-        mu_text(ctx, logbuf);
+        mu_text(ctx, log_buffer);
         mu_end_panel(ctx);
-        if (logbuf_updated) {
+        if (log_buffer_updated) {
             panel->scroll.y = panel->content_size.y;
-            logbuf_updated = 0;
+            log_buffer_updated = false;
         }
 
         /* input textbox + submit button */
@@ -259,6 +258,7 @@ style_window(mu_Context *ctx)
 int
 main(void)
 {
+    SetTraceLogLevel(LOG_WARNING);
     InitWindow(800, 600, "demo");
     SetTargetFPS(60);
 
