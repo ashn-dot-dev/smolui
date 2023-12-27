@@ -793,6 +793,12 @@ mu_label(mu_Context* ctx, char const* text)
 }
 
 int
+mu_button(mu_Context* ctx, char const* label)
+{
+    return mu_button_ex(ctx, label, 0, MU_OPT_ALIGNCENTER);
+}
+
+int
 mu_button_ex(mu_Context* ctx, char const* label, int icon, int opt)
 {
     int res = 0;
