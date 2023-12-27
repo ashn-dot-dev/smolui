@@ -267,7 +267,6 @@ void mu_draw_control_text(mu_Context* ctx, char const* str, mu_Rect rect, int co
 int mu_mouse_over(mu_Context* ctx, mu_Rect rect);
 void mu_update_control(mu_Context* ctx, mu_Id id, mu_Rect rect, int opt);
 
-#define mu_begin_window(ctx, title, rect) mu_begin_window_ex(ctx, title, rect, 0)
 #define mu_begin_panel(ctx, name)         mu_begin_panel_ex(ctx, name, 0)
 
 void mu_text(mu_Context* ctx, char const* text);
@@ -287,6 +286,7 @@ int mu_header_ex(mu_Context* ctx, char const* label, int opt);
 int mu_begin_treenode(mu_Context* ctx, char const* label);
 int mu_begin_treenode_ex(mu_Context* ctx, char const* label, int opt);
 void mu_end_treenode(mu_Context* ctx);
+int mu_begin_window(mu_Context* ctx, char const* title, mu_Rect rect);
 int mu_begin_window_ex(mu_Context* ctx, char const* title, mu_Rect rect, int opt);
 void mu_end_window(mu_Context* ctx);
 void mu_open_popup(mu_Context* ctx, char const* name);

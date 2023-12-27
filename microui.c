@@ -976,7 +976,7 @@ mu_slider_ex(mu_Context* ctx, mu_Real *value, mu_Real low, mu_Real high, mu_Real
 int
 mu_number(mu_Context* ctx, mu_Real *value, mu_Real step)
 {
-    return mu_number_ex(ctx, value, step, MU_SLIDER_FMT, MU_OPT_ALIGNCENTER)
+    return mu_number_ex(ctx, value, step, MU_SLIDER_FMT, MU_OPT_ALIGNCENTER);
 }
 
 int
@@ -1182,6 +1182,12 @@ end_root_container(mu_Context* ctx)
     /* pop base clip rect and container */
     mu_pop_clip_rect(ctx);
     pop_container(ctx);
+}
+
+int
+mu_begin_window(mu_Context* ctx, char const* title, mu_Rect rect)
+{
+    return mu_begin_window_ex(ctx, title, rect, 0);
 }
 
 int

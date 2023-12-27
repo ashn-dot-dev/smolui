@@ -232,7 +232,6 @@ extern func mu_draw_control_text(ctx: *mu_Context, str: *char, rect: mu_Rect, co
 extern func mu_mouse_over(ctx: *mu_Context, rect: mu_Rect) sint;
 extern func mu_update_control(ctx: *mu_Context, id: mu_Id, rect: mu_Rect, opt: sint) void;
 
-func mu_begin_window(ctx: *mu_Context, title: *char, rect: mu_Rect) sint { return mu_begin_window_ex(ctx, title, rect, 0); }
 func mu_begin_panel(ctx: *mu_Context, name: *char) void { mu_begin_panel_ex(ctx, name, 0); }
 
 extern func mu_text(ctx: *mu_Context, text: *char) void;
@@ -252,6 +251,7 @@ extern func mu_begin_treenode_ex(ctx: *mu_Context, label: *char, opt: sint) sint
 extern func mu_end_treenode(ctx: *mu_Context) void;
 extern func mu_header(ctx: *mu_Context, label: *char) sint;
 extern func mu_header_ex(ctx: *mu_Context, label: *char, opt: sint) sint;
+extern func mu_begin_window(ctx: *mu_Context, title: *char, rect: mu_Rect) sint;
 extern func mu_begin_window_ex(ctx: *mu_Context, title: *char, rect: mu_Rect, opt: sint) sint;
 extern func mu_end_window(ctx: *mu_Context) void;
 extern func mu_open_popup(ctx: *mu_Context, name: *char) void;
