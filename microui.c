@@ -921,6 +921,12 @@ number_textbox(mu_Context* ctx, mu_Real *value, mu_Rect r, mu_Id id)
 }
 
 int
+mu_slider(mu_Context* ctx, mu_Real *value, mu_Real lo, mu_Real hi)
+{
+    return mu_slider_ex(ctx, value, lo, hi, 0, MU_SLIDER_FMT, MU_OPT_ALIGNCENTER);
+}
+
+int
 mu_slider_ex(mu_Context* ctx, mu_Real *value, mu_Real low, mu_Real high, mu_Real step, char const* fmt, int opt)
 {
     char buf[MU_MAX_FMT + 1];
