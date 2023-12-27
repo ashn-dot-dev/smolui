@@ -841,6 +841,12 @@ mu_checkbox(mu_Context* ctx, char const* label, bool *state)
 }
 
 int
+mu_textbox(mu_Context* ctx, char *buf, int bufsz)
+{
+    return mu_textbox_ex(ctx, buf, bufsz, 0);
+}
+
+int
 mu_textbox_ex(mu_Context* ctx, char *buf, int bufsz, int opt)
 {
     mu_Id id = mu_get_id(ctx, &buf, sizeof(buf));
