@@ -1053,6 +1053,12 @@ header(mu_Context* ctx, char const* label, int istreenode, int opt)
 }
 
 int
+mu_header(mu_Context* ctx, char const* label)
+{
+    return mu_header_ex(ctx, label, 0);
+}
+
+int
 mu_header_ex(mu_Context* ctx, char const* label, int opt)
 {
     return header(ctx, label, 0, opt);

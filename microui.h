@@ -267,7 +267,6 @@ void mu_draw_control_text(mu_Context* ctx, char const* str, mu_Rect rect, int co
 int mu_mouse_over(mu_Context* ctx, mu_Rect rect);
 void mu_update_control(mu_Context* ctx, mu_Id id, mu_Rect rect, int opt);
 
-#define mu_header(ctx, label)             mu_header_ex(ctx, label, 0)
 #define mu_begin_treenode(ctx, label)     mu_begin_treenode_ex(ctx, label, 0)
 #define mu_begin_window(ctx, title, rect) mu_begin_window_ex(ctx, title, rect, 0)
 #define mu_begin_panel(ctx, name)         mu_begin_panel_ex(ctx, name, 0)
@@ -284,6 +283,7 @@ int mu_slider(mu_Context* ctx, mu_Real *value, mu_Real lo, mu_Real hi);
 int mu_slider_ex(mu_Context* ctx, mu_Real *value, mu_Real low, mu_Real high, mu_Real step, char const* fmt, int opt);
 int mu_number(mu_Context* ctx, mu_Real *value, mu_Real step);
 int mu_number_ex(mu_Context* ctx, mu_Real *value, mu_Real step, char const* fmt, int opt);
+int mu_header(mu_Context* ctx, char const* label);
 int mu_header_ex(mu_Context* ctx, char const* label, int opt);
 int mu_begin_treenode_ex(mu_Context* ctx, char const* label, int opt);
 void mu_end_treenode(mu_Context* ctx);
