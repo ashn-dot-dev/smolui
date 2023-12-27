@@ -267,8 +267,6 @@ void mu_draw_control_text(mu_Context* ctx, char const* str, mu_Rect rect, int co
 int mu_mouse_over(mu_Context* ctx, mu_Rect rect);
 void mu_update_control(mu_Context* ctx, mu_Id id, mu_Rect rect, int opt);
 
-#define mu_begin_panel(ctx, name)         mu_begin_panel_ex(ctx, name, 0)
-
 void mu_text(mu_Context* ctx, char const* text);
 void mu_label(mu_Context* ctx, char const* text);
 int mu_button(mu_Context* ctx, char const* label);
@@ -292,6 +290,7 @@ void mu_end_window(mu_Context* ctx);
 void mu_open_popup(mu_Context* ctx, char const* name);
 int mu_begin_popup(mu_Context* ctx, char const* name);
 void mu_end_popup(mu_Context* ctx);
+void mu_begin_panel(mu_Context* ctx, char const* name);
 void mu_begin_panel_ex(mu_Context* ctx, char const* name, int opt);
 void mu_end_panel(mu_Context* ctx);
 

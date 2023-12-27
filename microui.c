@@ -1304,6 +1304,12 @@ mu_end_popup(mu_Context* ctx)
 }
 
 void
+mu_begin_panel(mu_Context* ctx, char const* name)
+{
+    return mu_begin_panel_ex(ctx, name, 0);
+}
+
+void
 mu_begin_panel_ex(mu_Context* ctx, char const* name, int opt)
 {
     mu_Container *cnt;
