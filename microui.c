@@ -164,7 +164,7 @@ mu_begin(mu_Context* ctx)
 }
 
 static int
-compare_zindex(const void *a, const void *b)
+compare_zindex(const void* a, const void* b)
 {
     return (*(mu_Container**) a)->zindex - (*(mu_Container**) b)->zindex;
 }
@@ -210,14 +210,14 @@ mu_end(mu_Context* ctx)
 
     /* set root container jump commands */
     for (i = 0; i < n; i++) {
-        mu_Container *cnt = ctx->root_list.items[i];
+        mu_Container* cnt = ctx->root_list.items[i];
         /* if this is the first container then make the first command jump to it.
         ** otherwise set the previous container's tail to jump to this one */
         if (i == 0) {
-            mu_Command *cmd = (mu_Command*) ctx->command_list.items;
+            mu_Command* cmd = (mu_Command*) ctx->command_list.items;
             cmd->jump.dst = (char*) cnt->head + sizeof(mu_JumpCommand);
         } else {
-            mu_Container *prev = ctx->root_list.items[i - 1];
+            mu_Container* prev = ctx->root_list.items[i - 1];
             prev->tail->jump.dst = (char*) cnt->head + sizeof(mu_JumpCommand);
         }
         /* make the last container's tail jump to the end of command list */
@@ -238,16 +238,16 @@ mu_set_focus(mu_Context* ctx, mu_Id id)
 #define HASH_INITIAL 2166136261
 
 static void
-hash(mu_Id *hash, const void *data, int size)
+hash(mu_Id* hash, void const* data, int size)
 {
-    const unsigned char *p = data;
+    unsigned char const* p = data;
     while (size--) {
         *hash = (*hash ^ *p++) * 16777619;
     }
 }
 
 mu_Id
-mu_get_id(mu_Context* ctx, const void *data, int size)
+mu_get_id(mu_Context* ctx, void const* data, int size)
 {
     int idx = ctx->id_stack.idx;
     mu_Id res = (idx > 0) ? ctx->id_stack.items[idx - 1] : HASH_INITIAL;
@@ -257,7 +257,7 @@ mu_get_id(mu_Context* ctx, const void *data, int size)
 }
 
 void
-mu_push_id(mu_Context* ctx, const void *data, int size)
+mu_push_id(mu_Context* ctx, void const* data, int size)
 {
     push(ctx->id_stack, mu_get_id(ctx, data, size));
 }
@@ -320,8 +320,8 @@ get_layout(mu_Context* ctx)
 static void
 pop_container(mu_Context* ctx)
 {
-    mu_Container *cnt = mu_get_current_container(ctx);
-    mu_Layout *layout = get_layout(ctx);
+    mu_Container* cnt = mu_get_current_container(ctx);
+    mu_Layout* layout = get_layout(ctx);
     cnt->content_size.x = layout->max.x - layout->body.x;
     cnt->content_size.y = layout->max.y - layout->body.y;
     /* pop container, layout and id */
@@ -340,7 +340,7 @@ mu_get_current_container(mu_Context* ctx)
 static mu_Container*
 get_container(mu_Context* ctx, mu_Id id, int opt)
 {
-    mu_Container *cnt;
+    mu_Container* cnt;
     /* try to get existing container from pool */
     int idx = mu_pool_get(ctx, ctx->container_pool, MU_CONTAINERPOOL_SIZE, id);
     if (idx >= 0) {
@@ -367,7 +367,7 @@ mu_get_container(mu_Context* ctx, char const* name)
 }
 
 void
-mu_bring_to_front(mu_Context* ctx, mu_Container *cnt)
+mu_bring_to_front(mu_Context* ctx, mu_Container* cnt)
 {
     cnt->zindex = ++ctx->last_zindex;
 }
@@ -377,7 +377,7 @@ mu_bring_to_front(mu_Context* ctx, mu_Container *cnt)
 **============================================================================*/
 
 int
-mu_pool_init(mu_Context* ctx, mu_PoolItem *items, int len, mu_Id id)
+mu_pool_init(mu_Context* ctx, mu_PoolItem* items, int len, mu_Id id)
 {
     int i, n = -1, f = ctx->frame;
     for (i = 0; i < len; i++) {
@@ -393,7 +393,7 @@ mu_pool_init(mu_Context* ctx, mu_PoolItem *items, int len, mu_Id id)
 }
 
 int
-mu_pool_get(mu_Context* ctx, mu_PoolItem *items, int len, mu_Id id)
+mu_pool_get(mu_Context* ctx, mu_PoolItem* items, int len, mu_Id id)
 {
     int i;
     unused(ctx);
@@ -404,7 +404,7 @@ mu_pool_get(mu_Context* ctx, mu_PoolItem *items, int len, mu_Id id)
 }
 
 void
-mu_pool_update(mu_Context* ctx, mu_PoolItem *items, int idx)
+mu_pool_update(mu_Context* ctx, mu_PoolItem* items, int idx)
 {
     items[idx].last_update = ctx->frame;
 }
@@ -474,7 +474,7 @@ mu_push_command(mu_Context* ctx, int type, int size)
     // push will be properly aligned to the alignment of an mu_Command.
     while ((size % _Alignof(mu_Command)) != 0) { size += 1; }
 
-    mu_Command *cmd = (mu_Command*) (ctx->command_list.items + ctx->command_list.idx);
+    mu_Command* cmd = (mu_Command*) (ctx->command_list.items + ctx->command_list.idx);
     expect(ctx->command_list.idx + size < MU_COMMANDLIST_SIZE);
     cmd->base.type = type;
     cmd->base.size = size;
@@ -498,9 +498,9 @@ mu_next_command(mu_Context* ctx, mu_Command **cmd)
 }
 
 static mu_Command*
-push_jump(mu_Context* ctx, mu_Command *dst)
+push_jump(mu_Context* ctx, mu_Command* dst)
 {
-    mu_Command *cmd;
+    mu_Command* cmd;
     cmd = mu_push_command(ctx, MU_COMMAND_JUMP, sizeof(mu_JumpCommand));
     cmd->jump.dst = dst;
     return cmd;
@@ -509,7 +509,7 @@ push_jump(mu_Context* ctx, mu_Command *dst)
 void
 mu_set_clip(mu_Context* ctx, mu_Rect rect)
 {
-    mu_Command *cmd;
+    mu_Command* cmd;
     cmd = mu_push_command(ctx, MU_COMMAND_CLIP, sizeof(mu_ClipCommand));
     cmd->clip.rect = rect;
 }
@@ -517,7 +517,7 @@ mu_set_clip(mu_Context* ctx, mu_Rect rect)
 void
 mu_draw_rect(mu_Context* ctx, mu_Rect rect, mu_Color color)
 {
-    mu_Command *cmd;
+    mu_Command* cmd;
     rect = intersect_rects(rect, mu_get_clip_rect(ctx));
     if (rect.w > 0 && rect.h > 0) {
         cmd = mu_push_command(ctx, MU_COMMAND_RECT, sizeof(mu_RectCommand));
@@ -538,7 +538,7 @@ mu_draw_box(mu_Context* ctx, mu_Rect rect, mu_Color color)
 void
 mu_draw_text(mu_Context* ctx, mu_Font font, char const* str, int len, mu_Vec2 pos, mu_Color color)
 {
-    mu_Command *cmd;
+    mu_Command* cmd;
     mu_Rect rect = mu_rect(
         pos.x, pos.y, ctx->text_width(font, str, len), ctx->text_height(font));
     int clipped = mu_check_clip(ctx, rect);
@@ -559,7 +559,7 @@ mu_draw_text(mu_Context* ctx, mu_Font font, char const* str, int len, mu_Vec2 po
 void
 mu_draw_icon(mu_Context* ctx, int id, mu_Rect rect, mu_Color color)
 {
-    mu_Command *cmd;
+    mu_Command* cmd;
     /* do clip command if the rect isn't fully contained within the cliprect */
     int clipped = mu_check_clip(ctx, rect);
     if (clipped == MU_CLIP_ALL ) { return; }
@@ -588,7 +588,8 @@ mu_layout_begin_column(mu_Context* ctx)
 void
 mu_layout_end_column(mu_Context* ctx)
 {
-    mu_Layout *a, *b;
+    mu_Layout* a;
+    mu_Layout* b;
     b = get_layout(ctx);
     pop(ctx->layout_stack);
     /* inherit position/next_row/max from child layout if they are greater */
@@ -600,9 +601,9 @@ mu_layout_end_column(mu_Context* ctx)
 }
 
 void
-mu_layout_row(mu_Context* ctx, int items, const int *widths, int height)
+mu_layout_row(mu_Context* ctx, int items, const int* widths, int height)
 {
-    mu_Layout *layout = get_layout(ctx);
+    mu_Layout* layout = get_layout(ctx);
     if (widths) {
         expect(items <= MU_MAX_WIDTHS);
         memcpy(layout->widths, widths, items * sizeof(widths[0]));
@@ -628,7 +629,7 @@ mu_layout_height(mu_Context* ctx, int height)
 void
 mu_layout_set_next(mu_Context* ctx, mu_Rect r, int relative)
 {
-    mu_Layout *layout = get_layout(ctx);
+    mu_Layout* layout = get_layout(ctx);
     layout->next = r;
     layout->next_type = relative ? RELATIVE : ABSOLUTE;
 }
@@ -636,8 +637,8 @@ mu_layout_set_next(mu_Context* ctx, mu_Rect r, int relative)
 mu_Rect
 mu_layout_next(mu_Context* ctx)
 {
-    mu_Layout *layout = get_layout(ctx);
-    mu_Style *style = ctx->style;
+    mu_Layout* layout = get_layout(ctx);
+    mu_Style* style = ctx->style;
     mu_Rect res;
 
     if (layout->next_type) {
@@ -818,7 +819,7 @@ mu_button_ex(mu_Context* ctx, char const* label, int icon, int opt)
 }
 
 int
-mu_checkbox(mu_Context* ctx, char const* label, bool *state)
+mu_checkbox(mu_Context* ctx, char const* label, bool* state)
 {
     int res = 0;
     mu_Id id = mu_get_id(ctx, &state, sizeof(state));
@@ -841,13 +842,13 @@ mu_checkbox(mu_Context* ctx, char const* label, bool *state)
 }
 
 int
-mu_textbox(mu_Context* ctx, char *buf, int bufsz)
+mu_textbox(mu_Context* ctx, char* buf, int bufsz)
 {
     return mu_textbox_ex(ctx, buf, bufsz, 0);
 }
 
 int
-mu_textbox_ex(mu_Context* ctx, char *buf, int bufsz, int opt)
+mu_textbox_ex(mu_Context* ctx, char* buf, int bufsz, int opt)
 {
     mu_Id id = mu_get_id(ctx, &buf, sizeof(buf));
     mu_Rect r = mu_layout_next(ctx);
@@ -855,7 +856,7 @@ mu_textbox_ex(mu_Context* ctx, char *buf, int bufsz, int opt)
 }
 
 int
-mu_textbox_raw(mu_Context* ctx, char *buf, int bufsz, mu_Id id, mu_Rect r, int opt)
+mu_textbox_raw(mu_Context* ctx, char* buf, int bufsz, mu_Id id, mu_Rect r, int opt)
 {
     int res = 0;
     mu_update_control(ctx, id, r, opt | MU_OPT_HOLDFOCUS);
@@ -906,7 +907,7 @@ mu_textbox_raw(mu_Context* ctx, char *buf, int bufsz, mu_Id id, mu_Rect r, int o
 }
 
 static int
-number_textbox(mu_Context* ctx, mu_Real *value, mu_Rect r, mu_Id id)
+number_textbox(mu_Context* ctx, mu_Real* value, mu_Rect r, mu_Id id)
 {
     if (ctx->mouse_pressed == MU_MOUSE_LEFT && ctx->key_down & MU_KEY_SHIFT &&
         ctx->hover == id
@@ -927,13 +928,13 @@ number_textbox(mu_Context* ctx, mu_Real *value, mu_Rect r, mu_Id id)
 }
 
 int
-mu_slider(mu_Context* ctx, mu_Real *value, mu_Real lo, mu_Real hi)
+mu_slider(mu_Context* ctx, mu_Real* value, mu_Real lo, mu_Real hi)
 {
     return mu_slider_ex(ctx, value, lo, hi, 0, MU_SLIDER_FMT, MU_OPT_ALIGNCENTER);
 }
 
 int
-mu_slider_ex(mu_Context* ctx, mu_Real *value, mu_Real low, mu_Real high, mu_Real step, char const* fmt, int opt)
+mu_slider_ex(mu_Context* ctx, mu_Real* value, mu_Real low, mu_Real high, mu_Real step, char const* fmt, int opt)
 {
     char buf[MU_MAX_FMT + 1];
     mu_Rect thumb;
@@ -974,13 +975,13 @@ mu_slider_ex(mu_Context* ctx, mu_Real *value, mu_Real low, mu_Real high, mu_Real
 }
 
 int
-mu_number(mu_Context* ctx, mu_Real *value, mu_Real step)
+mu_number(mu_Context* ctx, mu_Real* value, mu_Real step)
 {
     return mu_number_ex(ctx, value, step, MU_SLIDER_FMT, MU_OPT_ALIGNCENTER);
 }
 
 int
-mu_number_ex(mu_Context* ctx, mu_Real *value, mu_Real step, char const* fmt, int opt)
+mu_number_ex(mu_Context* ctx, mu_Real* value, mu_Real step, char const* fmt, int opt)
 {
     char buf[MU_MAX_FMT + 1];
     int res = 0;
@@ -1126,7 +1127,7 @@ mu_end_treenode(mu_Context* ctx)
     } while (0)
 
 static void
-scrollbars(mu_Context* ctx, mu_Container *cnt, mu_Rect *body)
+scrollbars(mu_Context* ctx, mu_Container* cnt, mu_Rect* body)
 {
     int sz = ctx->style->scrollbar_size;
     mu_Vec2 cs = cnt->content_size;
@@ -1144,7 +1145,7 @@ scrollbars(mu_Context* ctx, mu_Container *cnt, mu_Rect *body)
 }
 
 static void
-push_container_body(mu_Context* ctx, mu_Container *cnt, mu_Rect body, int opt)
+push_container_body(mu_Context* ctx, mu_Container* cnt, mu_Rect body, int opt)
 {
     if (~opt & MU_OPT_NOSCROLL) { scrollbars(ctx, cnt, &body); }
     push_layout(ctx, expand_rect(body, -ctx->style->padding), cnt->scroll);
@@ -1152,7 +1153,7 @@ push_container_body(mu_Context* ctx, mu_Container *cnt, mu_Rect body, int opt)
 }
 
 static void
-begin_root_container(mu_Context* ctx, mu_Container *cnt)
+begin_root_container(mu_Context* ctx, mu_Container* cnt)
 {
     push(ctx->container_stack, cnt);
     /* push container to roots list and push head command */
@@ -1176,7 +1177,7 @@ end_root_container(mu_Context* ctx)
 {
     /* push tail 'goto' jump command and set head 'skip' command. the final
     ** steps on initing these are done in mu_end() */
-    mu_Container *cnt = mu_get_current_container(ctx);
+    mu_Container* cnt = mu_get_current_container(ctx);
     cnt->tail = push_jump(ctx, NULL);
     cnt->head->jump.dst = ctx->command_list.items + ctx->command_list.idx;
     /* pop base clip rect and container */
@@ -1195,7 +1196,7 @@ mu_begin_window_ex(mu_Context* ctx, char const* title, mu_Rect rect, int opt)
 {
     mu_Rect body;
     mu_Id id = mu_get_id(ctx, title, strlen(title));
-    mu_Container *cnt = get_container(ctx, id, opt);
+    mu_Container* cnt = get_container(ctx, id, opt);
     if (!cnt || !cnt->open) { return 0; }
     push(ctx->id_stack, id);
 
@@ -1280,7 +1281,7 @@ mu_end_window(mu_Context* ctx)
 void
 mu_open_popup(mu_Context* ctx, char const* name)
 {
-    mu_Container *cnt = mu_get_container(ctx, name);
+    mu_Container* cnt = mu_get_container(ctx, name);
     /* set as hover root so popup isn't closed in begin_window_ex()  */
     ctx->hover_root = ctx->next_hover_root = cnt;
     /* position at mouse cursor, open and bring-to-front */
@@ -1312,7 +1313,7 @@ mu_begin_panel(mu_Context* ctx, char const* name)
 void
 mu_begin_panel_ex(mu_Context* ctx, char const* name, int opt)
 {
-    mu_Container *cnt;
+    mu_Container* cnt;
     mu_push_id(ctx, name, strlen(name));
     cnt = get_container(ctx, ctx->last_id, opt);
     cnt->rect = mu_layout_next(ctx);

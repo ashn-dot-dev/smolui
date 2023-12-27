@@ -118,7 +118,7 @@ typedef struct { unsigned char r, g, b, a; } mu_Color;
 typedef struct { mu_Id id; int last_update; } mu_PoolItem;
 
 typedef struct { int type, size; } mu_BaseCommand;
-typedef struct { mu_BaseCommand base; void *dst; } mu_JumpCommand;
+typedef struct { mu_BaseCommand base; void* dst; } mu_JumpCommand;
 typedef struct { mu_BaseCommand base; mu_Rect rect; } mu_ClipCommand;
 typedef struct { mu_BaseCommand base; mu_Rect rect; mu_Color color; } mu_RectCommand;
 typedef struct { mu_BaseCommand base; mu_Font font; mu_Vec2 pos; mu_Color color; char str[1]; } mu_TextCommand;
@@ -177,7 +177,7 @@ struct mu_Context {
     void (*draw_frame)(mu_Context* ctx, mu_Rect rect, int colorid);
     /* core state */
     mu_Style _style;
-    mu_Style *style;
+    mu_Style* style;
     mu_Id hover;
     mu_Id focus;
     mu_Id last_id;
@@ -185,9 +185,9 @@ struct mu_Context {
     int last_zindex;
     int updated_focus;
     int frame;
-    mu_Container *hover_root;
-    mu_Container *next_hover_root;
-    mu_Container *scroll_target;
+    mu_Container* hover_root;
+    mu_Container* next_hover_root;
+    mu_Container* scroll_target;
     char number_edit_buf[MU_MAX_FMT];
     mu_Id number_edit;
     /* stacks */
@@ -230,11 +230,11 @@ mu_Rect mu_get_clip_rect(mu_Context* ctx);
 int mu_check_clip(mu_Context* ctx, mu_Rect r);
 mu_Container* mu_get_current_container(mu_Context* ctx);
 mu_Container* mu_get_container(mu_Context* ctx, char const* name);
-void mu_bring_to_front(mu_Context* ctx, mu_Container *cnt);
+void mu_bring_to_front(mu_Context* ctx, mu_Container* cnt);
 
-int mu_pool_init(mu_Context* ctx, mu_PoolItem *items, int len, mu_Id id);
-int mu_pool_get(mu_Context* ctx, mu_PoolItem *items, int len, mu_Id id);
-void mu_pool_update(mu_Context* ctx, mu_PoolItem *items, int idx);
+int mu_pool_init(mu_Context* ctx, mu_PoolItem* items, int len, mu_Id id);
+int mu_pool_get(mu_Context* ctx, mu_PoolItem* items, int len, mu_Id id);
+void mu_pool_update(mu_Context* ctx, mu_PoolItem* items, int idx);
 
 void mu_input_mousemove(mu_Context* ctx, int x, int y);
 void mu_input_mousedown(mu_Context* ctx, int x, int y, int btn);
@@ -245,7 +245,7 @@ void mu_input_keyup(mu_Context* ctx, int key);
 void mu_input_text(mu_Context* ctx, char const* text);
 
 mu_Command* mu_push_command(mu_Context* ctx, int type, int size);
-int mu_next_command(mu_Context* ctx, mu_Command **cmd);
+int mu_next_command(mu_Context* ctx, mu_Command** cmd);
 void mu_set_clip(mu_Context* ctx, mu_Rect rect);
 void mu_draw_rect(mu_Context* ctx, mu_Rect rect, mu_Color color);
 void mu_draw_box(mu_Context* ctx, mu_Rect rect, mu_Color color);
@@ -269,14 +269,14 @@ void mu_text(mu_Context* ctx, char const* text);
 void mu_label(mu_Context* ctx, char const* text);
 int mu_button(mu_Context* ctx, char const* label);
 int mu_button_ex(mu_Context* ctx, char const* label, int icon, int opt);
-int mu_checkbox(mu_Context* ctx, char const* label, bool *state);
-int mu_textbox(mu_Context* ctx, char *buf, int bufsz);
-int mu_textbox_ex(mu_Context* ctx, char *buf, int bufsz, int opt);
-int mu_textbox_raw(mu_Context* ctx, char *buf, int bufsz, mu_Id id, mu_Rect r, int opt);
-int mu_slider(mu_Context* ctx, mu_Real *value, mu_Real lo, mu_Real hi);
-int mu_slider_ex(mu_Context* ctx, mu_Real *value, mu_Real low, mu_Real high, mu_Real step, char const* fmt, int opt);
-int mu_number(mu_Context* ctx, mu_Real *value, mu_Real step);
-int mu_number_ex(mu_Context* ctx, mu_Real *value, mu_Real step, char const* fmt, int opt);
+int mu_checkbox(mu_Context* ctx, char const* label, bool* state);
+int mu_textbox(mu_Context* ctx, char* buf, int bufsz);
+int mu_textbox_ex(mu_Context* ctx, char* buf, int bufsz, int opt);
+int mu_textbox_raw(mu_Context* ctx, char* buf, int bufsz, mu_Id id, mu_Rect r, int opt);
+int mu_slider(mu_Context* ctx, mu_Real* value, mu_Real lo, mu_Real hi);
+int mu_slider_ex(mu_Context* ctx, mu_Real* value, mu_Real low, mu_Real high, mu_Real step, char const* fmt, int opt);
+int mu_number(mu_Context* ctx, mu_Real* value, mu_Real step);
+int mu_number_ex(mu_Context* ctx, mu_Real* value, mu_Real step, char const* fmt, int opt);
 int mu_header(mu_Context* ctx, char const* label);
 int mu_header_ex(mu_Context* ctx, char const* label, int opt);
 int mu_begin_treenode(mu_Context* ctx, char const* label);
