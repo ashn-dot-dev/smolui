@@ -974,6 +974,12 @@ mu_slider_ex(mu_Context* ctx, mu_Real *value, mu_Real low, mu_Real high, mu_Real
 }
 
 int
+mu_number(mu_Context* ctx, mu_Real *value, mu_Real step)
+{
+    return mu_number_ex(ctx, value, step, MU_SLIDER_FMT, MU_OPT_ALIGNCENTER)
+}
+
+int
 mu_number_ex(mu_Context* ctx, mu_Real *value, mu_Real step, char const* fmt, int opt)
 {
     char buf[MU_MAX_FMT + 1];
