@@ -176,7 +176,7 @@ test_window(mu_Context* ctx)
 static void
 log_window(mu_Context* ctx)
 {
-    if (mu_begin_window_ex(ctx, "Log Window", mu_rect(350, 40, 300, 200), MU_OPT_NODRAG)) {
+    if (mu_begin_window_ex(ctx, "Log Window", mu_rect(350, 40, 300, 200), MU_OPT_NODRAG | MU_OPT_NOCLOSE)) {
         /* output text panel */
         mu_layout_row(ctx, 1, (int[]) { -1 }, -25);
         mu_begin_panel(ctx, "Log Output");

@@ -168,7 +168,7 @@ func test_window(ui: *smol::ui) void {
 var textbox_buffer = (:[128]char)[0...];
 func log_window(ui: *smol::ui) void
 {
-    if ui.*.begin_window_ex("Log Window", smol::rect::init(350, 40, 300, 200), smol::OPT_NODRAG) {
+    if ui.*.begin_window_ex("Log Window", smol::rect::init(350, 40, 300, 200), smol::OPT_NODRAG | smol::OPT_NOCLOSE) {
         # output text panel
         ui.*.layout_row((:[]sint)[-1], -25);
         ui.*.begin_panel("Log Output");
