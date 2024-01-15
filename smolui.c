@@ -174,7 +174,10 @@ smol_handle_input(mu_Context* ctx)
 void
 smol_render(mu_Context* ctx)
 {
-    BeginScissorMode(0, 0, GetScreenWidth(), GetScreenHeight());
+    // XXX: Scissor mode is broken for raylib 5.0 on macOS. It appears that
+    // behavior of scissor mode on raylib 5.0 does not properly handle high-DPI
+    // displays on macOS when running in fullscreen mode.
+    /* BeginScissorMode(0, 0, GetScreenWidth(), GetScreenHeight()); */
 
     mu_Command* cmd = NULL;
     while (mu_next_command(ctx, &cmd)) {
@@ -232,5 +235,6 @@ smol_render(mu_Context* ctx)
         }
     }
 
-    EndScissorMode();
+    // XXX: Scissor mode is broken for raylib 5.0 on macOS.
+    /* EndScissorMode(); */
 }

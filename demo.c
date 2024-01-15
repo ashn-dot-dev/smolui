@@ -270,6 +270,10 @@ main(void)
         BeginDrawing();
         ClearBackground(BLACK);
 
+        if (IsKeyPressed(KEY_F1)) {
+            ToggleFullscreen();
+        }
+
         smol_handle_input(&ctx);
         mu_begin(&ctx);
 

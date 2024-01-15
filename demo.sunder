@@ -263,6 +263,10 @@ func main() void {
         BeginDrawing();
         ClearBackground(BLACK);
 
+        if IsKeyPressed(KEY_F1) {
+            ToggleFullscreen();
+        }
+
         smol::handle_input(ui.context);
         mu_begin(ui.context);
 
