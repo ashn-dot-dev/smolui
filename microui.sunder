@@ -9,7 +9,7 @@ let MU_LAYOUTSTACK_SIZE     = 16u;
 let MU_CONTAINERPOOL_SIZE   = 48u;
 let MU_TREENODEPOOL_SIZE    = 48u;
 let MU_MAX_WIDTHS           = 16u;
-alias MU_REAL               = float;
+type MU_REAL               = float;
 let MU_REAL_FMT             = startof("%.3g");
 let MU_SLIDER_FMT           = startof("%.2f");
 let MU_MAX_FMT              = 127u;
@@ -75,16 +75,16 @@ let MU_KEY_ALT         = (:sint)(1u << 2);
 let MU_KEY_BACKSPACE   = (:sint)(1u << 3);
 let MU_KEY_RETURN      = (:sint)(1u << 4);
 
-alias mu_Id = uint;
-alias mu_Real = MU_REAL;
-alias mu_Font = *any;
+type mu_Id = uint;
+type mu_Real = MU_REAL;
+type mu_Font = *any;
 
 struct mu_Vec2 { var x: sint; var y: sint; }
 struct mu_Rect { var x: sint; var y: sint; var w: sint; var h: sint; }
 struct mu_Color { var r: u8; var g: u8; var b: u8; var a: u8; }
 struct mu_PoolItem { var id: mu_Id; var last_update: sint; }
 
-struct mu_BaseCommand { var type: sint; var size: sint; }
+struct mu_BaseCommand { var kind: sint; var size: sint; }
 struct mu_JumpCommand { var base: mu_BaseCommand; var dst: *any; }
 struct mu_ClipCommand { var base: mu_BaseCommand; var rect: mu_Rect; }
 struct mu_RectCommand { var base: mu_BaseCommand; var rect: mu_Rect; var color: mu_Color; }
@@ -92,7 +92,7 @@ struct mu_TextCommand { var base: mu_BaseCommand; var font: mu_Font; var pos: mu
 struct mu_IconCommand { var base: mu_BaseCommand; var rect: mu_Rect; var id: sint; var color: mu_Color; }
 
 union mu_Command {
-    var type: sint;
+    var kind: sint;
     var base: mu_BaseCommand;
     var jump: mu_JumpCommand;
     var clip: mu_ClipCommand;
@@ -212,7 +212,7 @@ extern func mu_input_keydown(ctx: *mu_Context, key: sint) void;
 extern func mu_input_keyup(ctx: *mu_Context, key: sint) void;
 extern func mu_input_text(ctx: *mu_Context, tex: *char) void;
 
-extern func mu_push_command(ctx: *mu_Context, type: sint, size: sint) *mu_Command;
+extern func mu_push_command(ctx: *mu_Context, kind: sint, size: sint) *mu_Command;
 extern func mu_next_command(ctx: *mu_Context, cmd: **mu_Command) sint;
 extern func mu_set_clip(ctx: *mu_Context, rect: mu_Rect) void;
 extern func mu_draw_rect(ctx: *mu_Context, rect: mu_Rect, color: mu_Color) void;

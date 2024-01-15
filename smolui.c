@@ -178,7 +178,7 @@ smol_render(mu_Context* ctx)
 
     mu_Command* cmd = NULL;
     while (mu_next_command(ctx, &cmd)) {
-        switch (cmd->type) {
+        switch (cmd->kind) {
         case MU_COMMAND_TEXT: {
             Font font = SMOL_FONT_FROM_MU(cmd->text.font);
             Vector2 text_position = SMOL_VECTOR2_FROM_MU(cmd->text.pos);

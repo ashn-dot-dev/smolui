@@ -10,17 +10,17 @@ extern func setup_font(ctx: *mu_Context, font: *Font) void;
 extern func handle_input(ctx: *mu_Context) void;
 extern func render(ctx: *mu_Context) void;
 
-alias id = mu_Id;
-alias font = mu_Font;
-alias vec2 = mu_Vec2;
-alias rect = mu_Rect;
-alias color = mu_Color;
+type id = mu_Id;
+type font = mu_Font;
+type vec2 = mu_Vec2;
+type rect = mu_Rect;
+type color = mu_Color;
 
-alias command = mu_Command;
-alias layout = mu_Layout;
-alias container = mu_Container;
-alias style = mu_Style;
-alias context = mu_Context;
+type command = mu_Command;
+type layout = mu_Layout;
+type container = mu_Container;
+type style = mu_Style;
+type context = mu_Context;
 
 let RES_ACTIVE = MU_RES_ACTIVE;
 let RES_SUBMIT = MU_RES_SUBMIT;

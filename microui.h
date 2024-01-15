@@ -118,7 +118,7 @@ typedef struct { int x, y, w, h; } mu_Rect;
 typedef struct { unsigned char r, g, b, a; } mu_Color;
 typedef struct { mu_Id id; int last_update; } mu_PoolItem;
 
-typedef struct { int type, size; } mu_BaseCommand;
+typedef struct { int kind, size; } mu_BaseCommand;
 typedef struct { mu_BaseCommand base; void* dst; } mu_JumpCommand;
 typedef struct { mu_BaseCommand base; mu_Rect rect; } mu_ClipCommand;
 typedef struct { mu_BaseCommand base; mu_Rect rect; mu_Color color; } mu_RectCommand;
@@ -126,7 +126,7 @@ typedef struct { mu_BaseCommand base; mu_Font font; mu_Vec2 pos; mu_Color color;
 typedef struct { mu_BaseCommand base; mu_Rect rect; int id; mu_Color color; } mu_IconCommand;
 
 typedef union {
-    int type;
+    int kind;
     mu_BaseCommand base;
     mu_JumpCommand jump;
     mu_ClipCommand clip;
@@ -245,7 +245,7 @@ void mu_input_keydown(mu_Context* ctx, int key);
 void mu_input_keyup(mu_Context* ctx, int key);
 void mu_input_text(mu_Context* ctx, char const* text);
 
-mu_Command* mu_push_command(mu_Context* ctx, int type, int size);
+mu_Command* mu_push_command(mu_Context* ctx, int kind, int size);
 int mu_next_command(mu_Context* ctx, mu_Command** cmd);
 void mu_set_clip(mu_Context* ctx, mu_Rect rect);
 void mu_draw_rect(mu_Context* ctx, mu_Rect rect, mu_Color color);

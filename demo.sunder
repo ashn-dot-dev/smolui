@@ -212,7 +212,7 @@ func u8_slider(ui: *smol::ui, value: *u8, low: sint, high: sint) bool
 }
 
 func style_window(ui: *smol::ui) void {
-    alias color_mapping = struct { var label: []byte; var idx: sint; };
+    type color_mapping = struct { var label: []byte; var idx: sint; };
     let colors = (:[]color_mapping)[
         (:color_mapping){.label = "text:",         .idx = MU_COLOR_TEXT       },
         (:color_mapping){.label = "border:",       .idx = MU_COLOR_BORDER     },
