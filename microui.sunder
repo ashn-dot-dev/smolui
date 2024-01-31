@@ -135,7 +135,7 @@ struct mu_Style {
     var title_height: sint;
     var scrollbar_size: sint;
     var thumb_size: sint;
-    var colors: [(:usize)MU_COLOR_MAX]mu_Color;
+    var colors: [MU_COLOR_MAX]mu_Color;
 }
 
 struct mu_Context {
