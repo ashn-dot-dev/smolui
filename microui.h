@@ -270,6 +270,7 @@ void mu_text(mu_Context* ctx, char const* text);
 void mu_label(mu_Context* ctx, char const* text);
 int mu_button(mu_Context* ctx, char const* label);
 int mu_button_ex(mu_Context* ctx, char const* label, int icon, int opt);
+int mu_button_raw(mu_Context* ctx, char const* label, int labelsz, int icon, mu_Id id, mu_Rect r, int opt);
 int mu_checkbox(mu_Context* ctx, char const* label, bool* state);
 int mu_textbox(mu_Context* ctx, char* buf, int bufsz);
 int mu_textbox_ex(mu_Context* ctx, char* buf, int bufsz, int opt);

@@ -237,6 +237,7 @@ extern func mu_text(ctx: *mu_Context, text: *char) void;
 extern func mu_label(ctx: *mu_Context, text: *char) void;
 extern func mu_button(ctx: *mu_Context, label: *char) sint;
 extern func mu_button_ex(ctx: *mu_Context, label: *char, icon: sint, opt: sint) sint;
+extern func mu_button_raw(ctx: *mu_Context, label: *char, labelsz: sint, icon: sint, id: mu_Id, r: mu_Rect, opt: sint) sint;
 extern func mu_checkbox(ctx: *mu_Context, label: *char, state: *bool) sint;
 extern func mu_textbox(ctx: *mu_Context, buf: *char, bufsz: sint) sint;
 extern func mu_textbox_ex(ctx: *mu_Context, buf: *char, bufsz: sint, opt: sint) sint;

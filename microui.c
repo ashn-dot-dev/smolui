@@ -802,10 +802,16 @@ mu_button(mu_Context* ctx, char const* label)
 int
 mu_button_ex(mu_Context* ctx, char const* label, int icon, int opt)
 {
-    int res = 0;
     mu_Id id = label ? mu_get_id(ctx, label, strlen(label))
                      : mu_get_id(ctx, &icon, sizeof(icon));
     mu_Rect r = mu_layout_next(ctx);
+    return mu_button_raw(ctx, label, strlen(label), icon, id, r, opt);
+}
+
+int
+mu_button_raw(mu_Context* ctx, char const* label, int labelsz, int icon, mu_Id id, mu_Rect r, int opt)
+{
+    int res = 0;
     mu_update_control(ctx, id, r, opt);
     /* handle click */
     if (ctx->mouse_pressed == MU_MOUSE_LEFT && ctx->focus == id) {
